@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Container } from './Layout';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from './ThemeToggle';
 
 export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -33,7 +34,10 @@ export const Header = () => {
             <a href="#skills" className="text-sm hover:text-primary transition-colors">Skills</a>
             <a href="#widgets" className="text-sm hover:text-primary transition-colors">Widgets</a>
           </nav>
-          <Button size="sm" variant="ghost" className="rounded-md border border-border/50 hover:bg-accent/50" id="header-contact-button">Contact</Button>
+          <div className="flex items-center space-x-2">
+            <ThemeToggle />
+            <Button size="sm" variant="ghost" className="rounded-md border border-border/50 hover:bg-accent/50" id="header-contact-button">Contact</Button>
+          </div>
         </div>
       </Container>
     </header>
