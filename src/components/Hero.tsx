@@ -9,10 +9,10 @@ export const Hero = () => {
     <section className="relative h-screen flex items-center">
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div 
-          className="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-indigo-50/50 to-purple-50/80 dark:from-blue-950/50 dark:via-indigo-950/30 dark:to-purple-950/50 animate-gradient-x"
+          className="absolute inset-0 bg-gradient-to-br from-emerald-950/90 via-green-900/70 to-teal-950/80 dark:from-emerald-950/90 dark:via-green-950/70 dark:to-teal-950/80 animate-gradient-x"
         />
-        <div className="absolute right-0 top-0 -translate-y-1/4 translate-x-1/4 w-3/4 h-3/4 rounded-full bg-primary opacity-[0.03] blur-3xl" />
-        <div className="absolute left-0 bottom-0 translate-y-1/4 -translate-x-1/4 w-3/4 h-3/4 rounded-full bg-blue-400 opacity-[0.03] blur-3xl" />
+        <div className="absolute right-0 top-0 -translate-y-1/4 translate-x-1/4 w-3/4 h-3/4 rounded-full bg-emerald-600 opacity-[0.03] blur-3xl" />
+        <div className="absolute left-0 bottom-0 translate-y-1/4 -translate-x-1/4 w-3/4 h-3/4 rounded-full bg-green-400 opacity-[0.03] blur-3xl" />
       </div>
       
       <Container>
@@ -31,7 +31,7 @@ export const Hero = () => {
             <Button size="lg" className="rounded-full">
               View Portfolio
             </Button>
-            <Button size="lg" variant="outline" className="rounded-full">
+            <Button size="lg" variant="outline" className="rounded-full" id="contact-button">
               Contact Me
             </Button>
           </div>
@@ -39,7 +39,7 @@ export const Hero = () => {
       </Container>
       
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-hover-bounce">
-        <a href="#widgets" className="flex flex-col items-center text-muted-foreground hover:text-primary transition-colors">
+        <a href="#skills" className="flex flex-col items-center text-muted-foreground hover:text-primary transition-colors">
           <span className="text-sm mb-2">Scroll Down</span>
           <ArrowDown className="h-5 w-5" />
         </a>

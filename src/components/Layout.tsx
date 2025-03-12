@@ -9,7 +9,7 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children, className }) => {
   return (
-    <div className={cn("min-h-screen w-full", className)}>
+    <div className={cn("min-h-screen w-full bg-background text-foreground", className)}>
       {children}
     </div>
   );

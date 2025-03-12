@@ -26,14 +26,14 @@ export const Header = () => {
       <Container>
         <div className="flex items-center justify-between">
           <div className="font-medium text-lg tracking-tight">
-            <span className="text-primary">John</span> Doe
+            <span className="text-primary">Jacob</span> Giamanco
           </div>
           <nav className="hidden md:flex items-center space-x-6">
             <a href="#about" className="text-sm hover:text-primary transition-colors">About</a>
             <a href="#skills" className="text-sm hover:text-primary transition-colors">Skills</a>
             <a href="#widgets" className="text-sm hover:text-primary transition-colors">Widgets</a>
           </nav>
-          <Button size="sm" className="rounded-full">Contact</Button>
+          <Button size="sm" className="rounded-full" id="header-contact-button">Contact</Button>
         </div>
       </Container>
     </header>

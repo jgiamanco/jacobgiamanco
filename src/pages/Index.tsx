@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Container } from '@/components/Layout';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
+import { ContactModal } from '@/components/ContactModal';
 import { WeatherWidget } from '@/components/widgets/WeatherWidget';
 import { ClockWidget } from '@/components/widgets/ClockWidget';
 import { SkillsWidget } from '@/components/widgets/SkillsWidget';
@@ -10,12 +11,48 @@ import { ResumeWidget } from '@/components/widgets/ResumeWidget';
 import { StockWidget } from '@/components/widgets/StockWidget';
 import { ChatWidget } from '@/components/widgets/ChatWidget';
 import { SportsWidget } from '@/components/widgets/SportsWidget';
+import { Toaster } from '@/components/ui/toaster';
 
 const Index = () => {
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  
+  useEffect(() => {
+    // Add dark class to html element
+    document.documentElement.classList.add('dark');
+    
+    // Set up event listeners for contact buttons
+    const contactButtons = document.querySelectorAll('#contact-button, #header-contact-button');
+    contactButtons.forEach(button => {
+      button.addEventListener('click', () => setContactModalOpen(true));
+    });
+    
+    return () => {
+      // Clean up event listeners
+      contactButtons.forEach(button => {
+        button.removeEventListener('click', () => setContactModalOpen(true));
+      });
+    };
+  }, []);
+
   return (
-    <Layout>
+    <Layout className="bg-background text-foreground">
       <Header />
       <Hero />
+      
+      <section id="skills" className="py-20">
+        <Container>
+          <div className="mb-12">
+            <h2 className="section-heading">Technical Skills</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl">
+              A showcase of my technical skills and proficiencies across various technologies and frameworks.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <SkillsWidget />
+          </div>
+        </Container>
+      </section>
       
       <section id="widgets" className="py-20">
         <Container>
@@ -30,7 +67,6 @@ const Index = () => {
             <WeatherWidget />
             <ClockWidget />
             <SportsWidget />
-            <SkillsWidget />
             <ResumeWidget />
             <StockWidget />
             <ChatWidget />
@@ -64,7 +100,7 @@ const Index = () => {
         <Container>
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <div className="font-medium">© 2023 John Doe</div>
+              <div className="font-medium">© {new Date().getFullYear()} Jacob Giamanco</div>
               <div className="text-sm text-muted-foreground">Frontend Developer</div>
             </div>
             <div className="flex space-x-6">
@@ -76,6 +112,9 @@ const Index = () => {
           </div>
         </Container>
       </footer>
+      
+      <ContactModal open={contactModalOpen} onOpenChange={setContactModalOpen} />
+      <Toaster />
     </Layout>
   );
 };
