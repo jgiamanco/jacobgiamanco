@@ -23,18 +23,18 @@ export const Layout: React.FC<LayoutProps> = ({ children, className }) => {
     <div className={cn("min-h-screen w-full bg-background text-foreground font-sans overflow-x-hidden", className)}>
       {/* Parallax background layers */}
       <div 
-        className="parallax-layer opacity-30"
+        className="parallax-layer opacity-20"
         style={{ 
           transform: `translateY(${scrollPosition * 0.2}px)`,
-          backgroundImage: 'url("data:image/svg+xml,%3Csvg width="20" height="20" xmlns="http://www.w3.org/2000/svg"%3E%3Ccircle cx="2" cy="2" r="1" fill="%23228B22" fill-opacity="0.3"/%3E%3C/svg%3E")',
+          backgroundImage: 'url("data:image/svg+xml,%3Csvg width="20" height="20" xmlns="http://www.w3.org/2000/svg"%3E%3Ccircle cx="2" cy="2" r="1" fill="%23155E45" fill-opacity="0.2"/%3E%3C/svg%3E")',
           backgroundSize: '20px 20px',
         }}
       />
       <div 
-        className="parallax-layer opacity-20"
+        className="parallax-layer opacity-15"
         style={{ 
           transform: `translateY(${scrollPosition * 0.1}px)`,
-          backgroundImage: 'url("data:image/svg+xml,%3Csvg width="40" height="40" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M0 20 L20 0 L40 20 L20 40 Z" fill="%23228B22" fill-opacity="0.2"/%3E%3C/svg%3E")',
+          backgroundImage: 'url("data:image/svg+xml,%3Csvg width="40" height="40" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M0 20 L20 0 L40 20 L20 40 Z" fill="%23155E45" fill-opacity="0.1"/%3E%3C/svg%3E")',
           backgroundSize: '40px 40px',
         }}
       />
@@ -42,7 +42,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, className }) => {
         className="parallax-layer opacity-10"
         style={{ 
           transform: `translateY(${scrollPosition * 0.05}px)`,
-          backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="20" height="20" x="20" y="20" fill="%23228B22" fill-opacity="0.15"/%3E%3C/svg%3E")',
+          backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="20" height="20" x="20" y="20" fill="%23155E45" fill-opacity="0.1"/%3E%3C/svg%3E")',
           backgroundSize: '60px 60px',
         }}
       />

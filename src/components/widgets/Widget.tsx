@@ -39,7 +39,7 @@ export const Widget: React.FC<WidgetProps> = ({
           {headerContent}
         </div>
       )}
-      <div className={cn("widget-content relative", isHovered && "bg-secondary/10")}>
+      <div className={cn("widget-content relative", isHovered && "bg-secondary/20")}>
         {isLoading ? (
           <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-xs">
             <Loader2 className="h-5 w-5 animate-spin text-primary" />
