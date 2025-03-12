@@ -2,21 +2,52 @@
 import React from 'react';
 import { Widget } from './Widget';
 import { cn } from '@/lib/utils';
+import { Code, FileCode, Terminal, Database, Braces, Layout, Laptop, Server } from 'lucide-react';
 
 interface Skill {
   name: string;
-  icon: string;
+  icon: React.ReactNode;
   proficiency: number; // 0-100
   color: string;
 }
 
 const skills: Skill[] = [
-  { name: 'React', icon: '⚛️', proficiency: 90, color: 'bg-blue-500' },
-  { name: 'TypeScript', icon: '𝐓𝐒', proficiency: 85, color: 'bg-blue-600' },
-  { name: 'JavaScript', icon: '𝐉𝐒', proficiency: 95, color: 'bg-yellow-400' },
-  { name: 'Python', icon: '🐍', proficiency: 75, color: 'bg-green-500' },
-  { name: 'Node.js', icon: '🟢', proficiency: 80, color: 'bg-green-600' },
-  { name: 'Next.js', icon: '𝐍', proficiency: 85, color: 'bg-black' },
+  { 
+    name: 'React', 
+    icon: <Layout className="h-5 w-5" />, 
+    proficiency: 90, 
+    color: 'bg-blue-500' 
+  },
+  { 
+    name: 'TypeScript', 
+    icon: <FileCode className="h-5 w-5" />, 
+    proficiency: 85, 
+    color: 'bg-blue-600' 
+  },
+  { 
+    name: 'JavaScript', 
+    icon: <Braces className="h-5 w-5" />, 
+    proficiency: 95, 
+    color: 'bg-yellow-400' 
+  },
+  { 
+    name: 'Python', 
+    icon: <Code className="h-5 w-5" />, 
+    proficiency: 75, 
+    color: 'bg-green-500' 
+  },
+  { 
+    name: 'Node.js', 
+    icon: <Server className="h-5 w-5" />, 
+    proficiency: 80, 
+    color: 'bg-green-600' 
+  },
+  { 
+    name: 'Next.js', 
+    icon: <Laptop className="h-5 w-5" />, 
+    proficiency: 85, 
+    color: 'bg-black dark:bg-gray-800' 
+  },
 ];
 
 export const SkillsWidget = () => {
@@ -30,7 +61,7 @@ export const SkillsWidget = () => {
           >
             <div className="flex items-center space-x-2 mb-2">
               <div className={cn("w-8 h-8 rounded-md flex items-center justify-center text-white", skill.color)}>
-                <span>{skill.icon}</span>
+                {skill.icon}
               </div>
               <h4 className="font-medium">{skill.name}</h4>
             </div>
