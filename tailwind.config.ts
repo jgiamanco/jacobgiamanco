@@ -27,6 +27,16 @@ export default {
 					"BlinkMacSystemFont",
 					"sans-serif",
 				],
+				mono: [
+					"JetBrains Mono",
+					"SF Mono",
+					"Menlo",
+					"Monaco",
+					"Consolas",
+					"Liberation Mono",
+					"Courier New",
+					"monospace",
+				],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -66,6 +76,9 @@ export default {
 					DEFAULT: 'hsl(var(--widget))',
 					foreground: 'hsl(var(--widget-foreground))'
 				}
+			},
+			scale: {
+				'102': '1.02',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
