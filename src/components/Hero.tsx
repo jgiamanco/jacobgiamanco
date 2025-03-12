@@ -9,7 +9,7 @@ export const Hero = () => {
     <section className="relative h-screen flex items-center">
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div 
-          className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10 dark:from-primary/5 dark:via-background dark:to-accent/5"
+          className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5"
         />
         <div className="absolute right-0 top-0 -translate-y-1/4 translate-x-1/4 w-3/4 h-3/4 rounded-full bg-primary opacity-[0.02] blur-3xl" />
         <div className="absolute left-0 bottom-0 translate-y-1/4 -translate-x-1/4 w-3/4 h-3/4 rounded-full bg-accent opacity-[0.02] blur-3xl" />

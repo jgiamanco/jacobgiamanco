@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Layout, Container } from '@/components/Layout';
 import { Header } from '@/components/Header';
@@ -17,9 +16,6 @@ const Index = () => {
   const [contactModalOpen, setContactModalOpen] = useState(false);
   
   useEffect(() => {
-    // Add dark class to html element
-    document.documentElement.classList.add('dark');
-    
     // Set up event listeners for contact buttons
     const contactButtons = document.querySelectorAll('#contact-button, #header-contact-button');
     contactButtons.forEach(button => {
