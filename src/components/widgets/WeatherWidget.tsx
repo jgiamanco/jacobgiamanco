@@ -12,11 +12,13 @@ import {
   CloudFog, 
   CloudLightning, 
   Wind, 
-  SearchIcon 
+  SearchIcon,
+  Droplets
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/ThemeProvider';
+import { cn } from '@/lib/utils';
 
 interface WeatherData {
   temperature: number;
@@ -115,7 +117,6 @@ export const WeatherWidget = () => {
     <Widget 
       title="Weather" 
       isLoading={isLoading}
-      className={theme === 'dark' ? 'bg-gradient-to-br from-slate-800 to-slate-900' : 'bg-gradient-to-br from-blue-50 to-indigo-50'}
     >
       <form onSubmit={handleLocationSubmit} className="flex gap-2 mb-4">
         <Input
@@ -141,18 +142,22 @@ export const WeatherWidget = () => {
               {getWeatherIcon(weather.condition)}
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3 mt-4 text-sm">
-            <div className="flex flex-col">
-              <span className="text-muted-foreground">Feels like</span>
-              <span>{Math.round(weather.feelsLike)}°F</span>
+          
+          <div className="grid grid-cols-3 gap-3 mt-4 bg-secondary/30 rounded-lg p-3 border border-border/50">
+            <div className="flex flex-col items-center">
+              <Thermometer className="h-4 w-4 mb-1 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Feels like</span>
+              <span className="font-medium">{Math.round(weather.feelsLike)}°F</span>
             </div>
-            <div className="flex flex-col">
-              <span className="text-muted-foreground">Humidity</span>
-              <span>{weather.humidity}%</span>
+            <div className="flex flex-col items-center">
+              <Droplets className="h-4 w-4 mb-1 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Humidity</span>
+              <span className="font-medium">{weather.humidity}%</span>
             </div>
-            <div className="flex flex-col">
-              <span className="text-muted-foreground">Wind</span>
-              <span>{weather.windSpeed} mph</span>
+            <div className="flex flex-col items-center">
+              <Wind className="h-4 w-4 mb-1 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Wind</span>
+              <span className="font-medium">{weather.windSpeed} mph</span>
             </div>
           </div>
         </div>
