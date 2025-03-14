@@ -4,6 +4,7 @@ import { Container } from './Layout';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './ThemeToggle';
+import { Link } from 'react-router-dom';
 
 export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -38,28 +39,27 @@ export const Header = () => {
     >
       <Container>
         <div className="flex items-center justify-between">
-          <a href="/" className="font-medium text-lg tracking-tight cursor-pointer">
+          <Link to="/" className="font-medium text-lg tracking-tight cursor-pointer">
             <span className="text-primary font-semibold">Jacob</span> Giamanco
-          </a>
+          </Link>
           
           <div className="flex items-center space-x-8">
+            <ThemeToggle />
             <nav className="hidden md:flex items-center space-x-8">
-              <button 
-                onClick={() => scrollToSection('skills')}
-                className="text-sm hover:text-primary transition-colors"
-              >
-                Skills
-              </button>
               <button 
                 onClick={() => scrollToSection('widgets')}
                 className="text-sm hover:text-primary transition-colors"
               >
                 Widgets
               </button>
+              <button 
+                onClick={() => scrollToSection('skills')}
+                className="text-sm hover:text-primary transition-colors"
+              >
+                Skills
+              </button>
             </nav>
-            
             <Button size="sm" variant="ghost" className="rounded-md border border-border/50 hover:bg-accent/50" id="header-contact-button">Contact</Button>
-            <ThemeToggle />
           </div>
         </div>
       </Container>
