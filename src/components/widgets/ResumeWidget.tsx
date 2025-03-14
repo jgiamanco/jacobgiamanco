@@ -1,14 +1,11 @@
+
 import React from 'react';
 import { Widget } from './Widget';
 import { Button } from '@/components/ui/button';
 import { Download, FileText } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-interface ResumeWidgetProps {
-  id?: string;
-}
-
-export const ResumeWidget: React.FC<ResumeWidgetProps> = ({ id }) => {
+export const ResumeWidget = () => {
   const { toast } = useToast();
   
   const handleDownload = () => {
@@ -42,7 +39,7 @@ export const ResumeWidget: React.FC<ResumeWidgetProps> = ({ id }) => {
   };
 
   return (
-    <Widget title="Resume" className="md:row-span-1" id={id}>
+    <Widget title="Resume" className="md:row-span-1">
       <div className="flex flex-col items-center justify-center space-y-4 py-4">
         <div className="h-20 w-16 relative">
           <div className="absolute inset-0 bg-primary/10 rounded-lg rotate-3 transform-gpu" />

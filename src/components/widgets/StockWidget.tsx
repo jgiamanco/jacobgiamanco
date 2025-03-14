@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { StockList } from './stocks/StockList';
 import { StockDetail } from './stocks/StockDetail';
@@ -8,13 +9,8 @@ import {
   fetchHistoricalData 
 } from '@/utils/stockApi';
 import { useToast } from '@/hooks/use-toast';
-import { Widget } from './Widget';
 
-interface StockWidgetProps {
-  id?: string;
-}
-
-export const StockWidget: React.FC<StockWidgetProps> = ({ id }) => {
+export const StockWidget = () => {
   const [stocks, setStocks] = useState<StockData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedStock, setSelectedStock] = useState<string | null>(null);
@@ -144,27 +140,25 @@ export const StockWidget: React.FC<StockWidgetProps> = ({ id }) => {
     setSelectedStock(null);
   };
 
+  if (selectedStock) {
+    const stock = stocks.find(s => s.symbol === selectedStock);
+    if (!stock) return null;
+    
+    return (
+      <StockDetail 
+        stock={stock} 
+        historicalData={historicalData[stock.symbol]} 
+        onBackClick={handleBackClick} 
+      />
+    );
+  }
+
   return (
-    <Widget title={selectedStock ? `${selectedStock} Details` : "Stocks"} isLoading={isLoading} id={id}>
-      {selectedStock ? (
-        <>
-          {stocks.find(s => s.symbol === selectedStock) && (
-            <StockDetail 
-              stock={stocks.find(s => s.symbol === selectedStock)!} 
-              historicalData={historicalData[selectedStock]} 
-              onBackClick={handleBackClick} 
-            />
-          )}
-        </>
-      ) : (
-        <div className="h-full">
-          <StockList 
-            stocks={stocks} 
-            onAddStock={handleAddStock} 
-            onStockClick={handleStockClick} 
-          />
-        </div>
-      )}
-    </Widget>
+    <StockList 
+      stocks={stocks} 
+      isLoading={isLoading} 
+      onAddStock={handleAddStock} 
+      onStockClick={handleStockClick} 
+    />
   );
 };

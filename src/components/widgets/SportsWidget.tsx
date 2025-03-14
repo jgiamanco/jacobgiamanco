@@ -7,11 +7,7 @@ import { Game, SportType, sportIcons } from '@/utils/sportsData';
 import { fetchSportsData } from '@/utils/sportsApi';
 import { SportTab } from './sports/SportTab';
 
-interface SportsWidgetProps {
-  id?: string;
-}
-
-export const SportsWidget: React.FC<SportsWidgetProps> = ({ id }) => {
+export const SportsWidget = () => {
   const [games, setGames] = useState<Game[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentSport, setCurrentSport] = useState<SportType>('NBA');
@@ -39,8 +35,8 @@ export const SportsWidget: React.FC<SportsWidgetProps> = ({ id }) => {
   }, [currentSport, toast]);
 
   return (
-    <Widget title="Live Scores" isLoading={isLoading} id={id} className="flex flex-col">
-      <Tabs defaultValue="NBA" onValueChange={(value) => setCurrentSport(value as SportType)} className="w-full flex-1 flex flex-col">
+    <Widget title="Live Scores" isLoading={isLoading}>
+      <Tabs defaultValue="NBA" onValueChange={(value) => setCurrentSport(value as SportType)} className="w-full">
         <TabsList className="grid grid-cols-4 w-full">
           {Object.keys(sportIcons).map((sport) => (
             <TabsTrigger key={sport} value={sport} className="flex items-center gap-2">
@@ -50,16 +46,14 @@ export const SportsWidget: React.FC<SportsWidgetProps> = ({ id }) => {
           ))}
         </TabsList>
         
-        <div className="flex-1 overflow-auto">
-          {Object.keys(sportIcons).map((sport) => (
-            <SportTab 
-              key={sport}
-              sport={sport as SportType} 
-              games={games} 
-              currentSport={currentSport} 
-            />
-          ))}
-        </div>
+        {Object.keys(sportIcons).map((sport) => (
+          <SportTab 
+            key={sport}
+            sport={sport as SportType} 
+            games={games} 
+            currentSport={currentSport} 
+          />
+        ))}
       </Tabs>
     </Widget>
   );

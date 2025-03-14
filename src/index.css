@@ -114,11 +114,11 @@
   }
   
   .widget-content {
-    @apply p-4 md:p-5 overflow-auto;
+    @apply p-4 md:p-5;
   }
   
   .widget-header {
-    @apply flex items-center justify-between border-b border-border/50 px-4 py-3 md:px-5 md:py-3 sticky top-0 z-10 bg-widget;
+    @apply flex items-center justify-between border-b border-border/50 px-4 py-3 md:px-5 md:py-3;
   }
   
   .widget-title {
@@ -143,49 +143,6 @@
   }
   
   .interactive-widget {
-    @apply cursor-pointer transition-all duration-300;
-  }
-  
-  .layout {
-    position: relative;
-    transition: height 200ms ease;
-  }
-  
-  .react-grid-item {
-    transition: all 200ms ease;
-    transition-property: left, top, width, height;
-  }
-  
-  .react-grid-item.react-grid-placeholder {
-    @apply bg-primary/20 border-2 border-primary/40 rounded-lg;
-    z-index: 2;
-    opacity: 0.5;
-  }
-  
-  .react-grid-item.resizing {
-    @apply ring-2 ring-primary/40 z-10;
-  }
-  
-  .react-grid-item.react-draggable-dragging {
-    @apply ring-2 ring-primary/40 shadow-xl z-10;
-    transition: none;
-  }
-  
-  .react-resizable-handle {
-    @apply absolute bottom-1 right-1 w-4 h-4 bg-primary/10 hover:bg-primary/20 rounded-sm;
-    cursor: se-resize;
-  }
-  
-  /* Widget size classes */
-  .widget.widget-small {
-    @apply col-span-1 row-span-2;
-  }
-  
-  .widget.widget-medium {
-    @apply col-span-2 row-span-2;
-  }
-  
-  .widget.widget-large {
-    @apply col-span-3 row-span-4;
+    @apply cursor-pointer hover:translate-y-[-5px] transition-all duration-300;
   }
 }

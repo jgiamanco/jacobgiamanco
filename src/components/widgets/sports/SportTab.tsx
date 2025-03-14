@@ -12,9 +12,9 @@ interface SportTabProps {
 
 export const SportTab: React.FC<SportTabProps> = ({ sport, games, currentSport }) => {
   return (
-    <TabsContent key={sport} value={sport} className="mt-0 pt-2">
-      <div className="space-y-2">
-        {currentSport === sport && games.slice(0, 3).map((game) => (
+    <TabsContent key={sport} value={sport} className="mt-0 pt-4">
+      <div className="space-y-3">
+        {currentSport === sport && games.map((game) => (
           <GameItem 
             key={game.id} 
             game={game} 
