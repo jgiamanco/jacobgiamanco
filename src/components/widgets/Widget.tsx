@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Loader2 } from 'lucide-react';
+import { Loader2, GripVertical } from 'lucide-react';
 
 interface WidgetProps {
   title?: string;
@@ -10,6 +10,7 @@ interface WidgetProps {
   isLoading?: boolean;
   headerContent?: React.ReactNode;
   interactive?: boolean;
+  id?: string;
 }
 
 export const Widget: React.FC<WidgetProps> = ({ 
@@ -18,7 +19,8 @@ export const Widget: React.FC<WidgetProps> = ({
   children, 
   isLoading = false,
   headerContent,
-  interactive = true
+  interactive = true,
+  id
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   
@@ -32,10 +34,16 @@ export const Widget: React.FC<WidgetProps> = ({
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      id={id}
     >
       {(title || headerContent) && (
-        <div className="widget-header">
-          {title && <h3 className="widget-title uppercase text-xs tracking-wider text-muted-foreground">{title}</h3>}
+        <div className="widget-header flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="react-grid-draghandle cursor-move">
+              <GripVertical className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors" />
+            </div>
+            {title && <h3 className="widget-title uppercase text-xs tracking-wider text-muted-foreground">{title}</h3>}
+          </div>
           {headerContent}
         </div>
       )}

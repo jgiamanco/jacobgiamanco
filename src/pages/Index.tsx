@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Layout, Container } from '@/components/Layout';
 import { Header } from '@/components/Header';
@@ -12,9 +13,16 @@ import { ChatWidget } from '@/components/widgets/ChatWidget';
 import { SportsWidget } from '@/components/widgets/SportsWidget';
 import { DiscordWidget } from '@/components/widgets/DiscordWidget';
 import { Toaster } from '@/components/ui/toaster';
+import { useWidgetContext } from '@/contexts/WidgetContext';
+import { Button } from '@/components/ui/button';
+import { RotateCcw } from 'lucide-react';
+import GridLayout from 'react-grid-layout';
+import { useMediaQuery } from '@/hooks/use-mobile';
 
 const Index = () => {
   const [contactModalOpen, setContactModalOpen] = useState(false);
+  const { layouts, updateLayouts, resetLayouts } = useWidgetContext();
+  const isMobile = useMediaQuery('(max-width: 768px)');
   
   useEffect(() => {
     const contactButtons = document.querySelectorAll('#contact-button, #header-contact-button');
@@ -28,6 +36,22 @@ const Index = () => {
       });
     };
   }, []);
+
+  const handleLayoutChange = (newLayout: any) => {
+    updateLayouts(newLayout);
+  };
+
+  // Map widget components to their IDs
+  const widgetComponents: Record<string, React.ReactNode> = {
+    weather: <WeatherWidget />,
+    clock: <ClockWidget />,
+    sports: <SportsWidget />,
+    resume: <ResumeWidget />,
+    stocks: <StockWidget />,
+    chat: <ChatWidget />,
+    discord: <DiscordWidget />,
+    skills: <SkillsWidget />
+  };
 
   return (
     <Layout className="bg-background text-foreground">
@@ -51,21 +75,48 @@ const Index = () => {
       
       <section id="widgets" className="py-20">
         <Container>
-          <div className="mb-12">
-            <h2 className="section-heading">Interactive Widgets</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              Explore these interactive widgets showcasing both my technical skills and design sensibilities.
-            </p>
+          <div className="mb-8 flex justify-between items-center">
+            <div>
+              <h2 className="section-heading mb-2">Interactive Widgets</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl">
+                Explore these interactive widgets showcasing both my technical skills and design sensibilities.
+                Try dragging, resizing, and rearranging them!
+              </p>
+            </div>
+            <Button onClick={resetLayouts} variant="outline" size="sm" className="flex items-center gap-2">
+              <RotateCcw className="h-4 w-4" />
+              Reset Layout
+            </Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <WeatherWidget />
-            <ClockWidget />
-            <SportsWidget />
-            <ResumeWidget />
-            <StockWidget />
-            <ChatWidget />
-            <DiscordWidget />
+          <div className="mb-12">
+            {!isMobile ? (
+              <GridLayout
+                className="layout"
+                layout={layouts}
+                cols={3}
+                rowHeight={150}
+                width={1200}
+                margin={[16, 16]}
+                onLayoutChange={handleLayoutChange}
+                draggableHandle=".react-grid-draghandle"
+                isBounded={true}
+              >
+                {layouts.map((layout) => (
+                  <div key={layout.i} className="widget-wrapper">
+                    {widgetComponents[layout.i]}
+                  </div>
+                ))}
+              </GridLayout>
+            ) : (
+              <div className="grid grid-cols-1 gap-6">
+                {layouts.map((layout) => (
+                  <div key={layout.i} className="widget-wrapper">
+                    {widgetComponents[layout.i]}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </Container>
       </section>
