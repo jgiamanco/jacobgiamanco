@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Layout, Container } from '@/components/Layout';
 import { Header } from '@/components/Header';
@@ -17,17 +18,24 @@ const Index = () => {
   const [contactModalOpen, setContactModalOpen] = useState(false);
   
   useEffect(() => {
+    // Updated implementation for contact button event listeners
+    const handleContactButtonClick = () => setContactModalOpen(true);
+    
+    // Query all contact buttons by ID
     const contactButtons = document.querySelectorAll('#contact-button, #header-contact-button');
+    
+    // Add event listeners to all contact buttons
     contactButtons.forEach(button => {
-      button.addEventListener('click', () => setContactModalOpen(true));
+      button.addEventListener('click', handleContactButtonClick);
     });
     
+    // Cleanup event listeners when component unmounts
     return () => {
       contactButtons.forEach(button => {
-        button.removeEventListener('click', () => setContactModalOpen(true));
+        button.removeEventListener('click', handleContactButtonClick);
       });
     };
-  }, []);
+  }, []); // Empty dependency array ensures this only runs once on mount
 
   return (
     <Layout className="bg-background text-foreground">
