@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/ThemeProvider";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "@/contexts/LocationContext";
 
 interface WeatherData {
   temperature: number;
@@ -33,10 +34,10 @@ interface WeatherData {
 export const WeatherWidget = () => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [location, setLocation] = useState("San Diego");
   const [inputLocation, setInputLocation] = useState("");
   const { theme } = useTheme();
   const { toast } = useToast();
+  const { location, setLocation } = useLocation();
 
   // Using environment variable for API key
   const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
@@ -60,18 +61,12 @@ export const WeatherWidget = () => {
       });
       return;
     }
-    fetchWeather(location);
-  }, [location, API_KEY, toast]);
+    fetchWeather(location.name);
+  }, [location.name, API_KEY, toast]);
 
   const fetchWeather = async (locationQuery: string) => {
     setIsLoading(true);
     try {
-      // Debug log to check API key in request
-      console.log(
-        "Making request with API key:",
-        API_KEY.substring(0, 4) + "..."
-      );
-
       // First try the exact query
       let response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
@@ -111,6 +106,14 @@ export const WeatherWidget = () => {
       const data = await response.json();
       console.log("Weather data received:", data); // Debug log
 
+      // Update location context with coordinates and timezone
+      setLocation({
+        lat: data.coord.lat,
+        lon: data.coord.lon,
+        name: data.name,
+        timezone: data.timezone, // timezone offset in seconds
+      });
+
       setWeather({
         temperature: data.main.temp,
         condition: data.weather[0].main.toLowerCase(),
@@ -149,7 +152,7 @@ export const WeatherWidget = () => {
   const handleLocationSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputLocation.trim()) {
-      setLocation(inputLocation.trim());
+      fetchWeather(inputLocation.trim());
       setInputLocation("");
     }
   };

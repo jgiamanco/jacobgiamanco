@@ -1,25 +1,24 @@
-
-import React from 'react';
-import { Widget } from './Widget';
-import { Button } from '@/components/ui/button';
-import { Download, FileText } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import React from "react";
+import { Widget } from "./Widget";
+import { Button } from "@/components/ui/button";
+import { Download, FileText } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export const ResumeWidget = () => {
   const { toast } = useToast();
-  
+
   const handleDownload = () => {
     // URL to your resume PDF file hosted in the public directory
-    const resumeUrl = '/resume.pdf'; 
-    
+    const resumeUrl = "/resume.pdf";
+
     // Create a link element
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = resumeUrl;
-    link.download = 'Jacob_Giamanco_Resume.pdf';
-    
+    link.download = "Jacob_Giamanco_Resume.pdf";
+
     // Append to the document, click it, and remove it
     document.body.appendChild(link);
-    
+
     // Try to download the file
     try {
       link.click();
@@ -48,11 +47,13 @@ export const ResumeWidget = () => {
             <FileText className="h-8 w-8 text-primary" />
           </div>
         </div>
-        
+
         <div className="text-center">
           <h3 className="font-medium">My Resume</h3>
-          <p className="text-sm text-muted-foreground mb-4">Download my full resume</p>
-          
+          <p className="text-sm text-muted-foreground mb-4">
+            Download my full resume
+          </p>
+
           <Button onClick={handleDownload} className="rounded-full">
             <Download className="mr-2 h-4 w-4" />
             Download PDF

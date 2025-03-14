@@ -130,19 +130,6 @@ export const Hero = () => {
             >
               <SkillItem
                 icon={
-                  <Briefcase
-                    className={`h-4 sm:h-5 w-4 sm:w-5 ${
-                      isLargeScreen ? "lg:h-6 lg:w-6" : ""
-                    }`}
-                  />
-                }
-                title="Technical Product Management"
-                description="Managed and optimized content for over 60 products, resulting in significant cost savings."
-                isLargeScreen={isLargeScreen}
-              />
-
-              <SkillItem
-                icon={
                   <Code
                     className={`h-4 sm:h-5 w-4 sm:w-5 ${
                       isLargeScreen ? "lg:h-6 lg:w-6" : ""
@@ -151,6 +138,19 @@ export const Hero = () => {
                 }
                 title="Frontend Engineering"
                 description="Crafted intuitive web experiences using modern JavaScript frameworks and UI/UX principles."
+                isLargeScreen={isLargeScreen}
+              />
+
+              <SkillItem
+                icon={
+                  <Briefcase
+                    className={`h-4 sm:h-5 w-4 sm:w-5 ${
+                      isLargeScreen ? "lg:h-6 lg:w-6" : ""
+                    }`}
+                  />
+                }
+                title="Technical Product Management"
+                description="Managed and optimized content for over 60 products, resulting in significant cost savings."
                 isLargeScreen={isLargeScreen}
               />
 

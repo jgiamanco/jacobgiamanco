@@ -1,6 +1,5 @@
-
-import React from 'react';
-import { Container } from '@/components/Layout';
+import React from "react";
+import { Container } from "@/components/Layout";
 
 export const Footer = () => {
   return (
@@ -8,14 +7,28 @@ export const Footer = () => {
       <Container>
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
-            <div className="font-medium">© {new Date().getFullYear()} Jacob Giamanco</div>
-            <div className="text-sm text-muted-foreground">Frontend Developer</div>
+            <div className="font-medium">
+              © {new Date().getFullYear()} Jacob Giamanco
+            </div>
+            <div className="text-sm text-muted-foreground">
+              Frontend Developer | Technical Product Manager
+            </div>
           </div>
           <div className="flex space-x-6">
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Twitter</a>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">GitHub</a>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">LinkedIn</a>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Dribbble</a>
+            <a
+              href="https://www.linkedin.com/in/jacob-giamanco"
+              target="_blank"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              LinkedIn
+            </a>
+            <a
+              href="https://github.com/jgiamanco"
+              target="_blank"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              GitHub
+            </a>
           </div>
         </div>
       </Container>
