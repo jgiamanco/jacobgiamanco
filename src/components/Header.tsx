@@ -41,23 +41,25 @@ export const Header = () => {
           <a href="/" className="font-medium text-lg tracking-tight cursor-pointer">
             <span className="text-primary font-semibold">Jacob</span> Giamanco
           </a>
-          <nav className="hidden md:flex items-center space-x-8">
-            <button 
-              onClick={() => scrollToSection('skills')}
-              className="text-sm hover:text-primary transition-colors"
-            >
-              Skills
-            </button>
-            <button 
-              onClick={() => scrollToSection('widgets')}
-              className="text-sm hover:text-primary transition-colors"
-            >
-              Widgets
-            </button>
-          </nav>
-          <div className="flex items-center space-x-2">
-            <ThemeToggle />
+          
+          <div className="flex items-center space-x-8">
+            <nav className="hidden md:flex items-center space-x-8">
+              <button 
+                onClick={() => scrollToSection('skills')}
+                className="text-sm hover:text-primary transition-colors"
+              >
+                Skills
+              </button>
+              <button 
+                onClick={() => scrollToSection('widgets')}
+                className="text-sm hover:text-primary transition-colors"
+              >
+                Widgets
+              </button>
+            </nav>
+            
             <Button size="sm" variant="ghost" className="rounded-md border border-border/50 hover:bg-accent/50" id="header-contact-button">Contact</Button>
+            <ThemeToggle />
           </div>
         </div>
       </Container>
