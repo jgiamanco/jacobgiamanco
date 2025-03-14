@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Widget } from './Widget';
 import { cn } from '@/lib/utils';
@@ -9,6 +8,10 @@ interface Skill {
   icon: React.ReactNode;
   proficiency: number; // 0-100
   color: string;
+}
+
+interface SkillsWidgetProps {
+  id?: string;
 }
 
 const skills: Skill[] = [
@@ -50,9 +53,9 @@ const skills: Skill[] = [
   },
 ];
 
-export const SkillsWidget = () => {
+export const SkillsWidget: React.FC<SkillsWidgetProps> = ({ id }) => {
   return (
-    <Widget title="Technical Skills" className="md:col-span-2">
+    <Widget title="Technical Skills" className="md:col-span-2" id={id}>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {skills.map((skill) => (
           <div 

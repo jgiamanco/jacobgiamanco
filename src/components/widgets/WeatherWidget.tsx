@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Widget } from './Widget';
 import { 
@@ -31,7 +30,11 @@ interface WeatherData {
   windSpeed: number;
 }
 
-export const WeatherWidget = () => {
+interface WeatherWidgetProps {
+  id?: string;
+}
+
+export const WeatherWidget: React.FC<WeatherWidgetProps> = ({ id }) => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [location, setLocation] = useState('San Diego, CA');
@@ -39,7 +42,6 @@ export const WeatherWidget = () => {
   const { theme } = useTheme();
   const { toast } = useToast();
   
-  // We'll use OpenWeatherMap API, which has a free tier
   const API_KEY = 'da0f9c8d90bde7e619c3ec47766a42f4';
   
   useEffect(() => {
@@ -49,7 +51,6 @@ export const WeatherWidget = () => {
   const fetchWeather = async (locationQuery: string) => {
     setIsLoading(true);
     try {
-      // Using OpenWeatherMap API
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(locationQuery)}&units=imperial&appid=${API_KEY}`
       );
@@ -77,7 +78,6 @@ export const WeatherWidget = () => {
         variant: "destructive",
       });
       
-      // Fallback to default data on error
       setWeather({
         temperature: 72,
         condition: 'sunny',
@@ -101,7 +101,6 @@ export const WeatherWidget = () => {
   };
 
   const getWeatherIcon = (condition: string) => {
-    // Map weather conditions to appropriate icons
     if (condition.includes('sunny') || condition.includes('clear')) {
       return <Sun className="h-12 w-12 text-yellow-500" />;
     } else if (condition.includes('cloud') || condition.includes('overcast')) {
@@ -117,7 +116,6 @@ export const WeatherWidget = () => {
     } else if (condition.includes('wind')) {
       return <Wind className="h-12 w-12 text-gray-500" />;
     } else {
-      // Default fallback
       return <Thermometer className="h-12 w-12 text-red-400" />;
     }
   };
@@ -126,6 +124,7 @@ export const WeatherWidget = () => {
     <Widget 
       title="Weather" 
       isLoading={isLoading}
+      id={id}
     >
       <form onSubmit={handleLocationSubmit} className="flex gap-2 mb-4">
         <Input

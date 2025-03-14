@@ -56,14 +56,14 @@ const Index = () => {
   };
 
   const widgetComponents: Record<string, React.ReactNode> = {
-    weather: <WeatherWidget />,
-    clock: <ClockWidget />,
-    sports: <SportsWidget />,
-    resume: <ResumeWidget />,
-    stocks: <StockWidget />,
-    chat: <ChatWidget />,
-    discord: <DiscordWidget />,
-    skills: <SkillsWidget />
+    weather: <WeatherWidget id="weather" />,
+    clock: <ClockWidget id="clock" />,
+    sports: <SportsWidget id="sports" />,
+    resume: <ResumeWidget id="resume" />,
+    stocks: <StockWidget id="stocks" />,
+    chat: <ChatWidget id="chat" />,
+    discord: <DiscordWidget id="discord" />,
+    skills: <SkillsWidget id="skills" />
   };
 
   return (
@@ -81,7 +81,7 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <SkillsWidget />
+            <SkillsWidget id="skills-section" />
           </div>
         </Container>
       </section>
@@ -93,7 +93,7 @@ const Index = () => {
               <h2 className="section-heading mb-2">Interactive Widgets</h2>
               <p className="text-lg text-muted-foreground max-w-2xl">
                 Explore these interactive widgets showcasing both my technical skills and design sensibilities.
-                Try dragging, resizing, and rearranging them!
+                Try resizing, dragging, and rearranging them!
               </p>
             </div>
             <Button onClick={resetLayouts} variant="outline" size="sm" className="flex items-center gap-2">

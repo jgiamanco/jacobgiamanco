@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Widget } from './Widget';
 import { Button } from '@/components/ui/button';
@@ -12,12 +11,16 @@ interface Message {
   isBot: boolean;
 }
 
+interface ChatWidgetProps {
+  id?: string;
+}
+
 // Initial messages
 const initialMessages: Message[] = [
   { id: 1, text: "Hello! I'm John's AI assistant. Ask me anything about his skills, experience, or projects.", isBot: true },
 ];
 
-export const ChatWidget = () => {
+export const ChatWidget: React.FC<ChatWidgetProps> = ({ id }) => {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -59,7 +62,7 @@ export const ChatWidget = () => {
   };
 
   return (
-    <Widget title="AI Assistant" className="md:col-span-2 md:row-span-2">
+    <Widget title="AI Assistant" className="md:col-span-2 md:row-span-2" id={id}>
       <div className="flex flex-col h-[300px]">
         <div className="flex-1 overflow-y-auto space-y-4 p-2">
           {messages.map((message) => (

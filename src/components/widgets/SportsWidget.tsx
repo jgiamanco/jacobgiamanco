@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Widget } from './Widget';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -7,7 +6,11 @@ import { Game, SportType, sportIcons } from '@/utils/sportsData';
 import { fetchSportsData } from '@/utils/sportsApi';
 import { SportTab } from './sports/SportTab';
 
-export const SportsWidget = () => {
+interface SportsWidgetProps {
+  id?: string;
+}
+
+export const SportsWidget: React.FC<SportsWidgetProps> = ({ id }) => {
   const [games, setGames] = useState<Game[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentSport, setCurrentSport] = useState<SportType>('NBA');
@@ -35,7 +38,7 @@ export const SportsWidget = () => {
   }, [currentSport, toast]);
 
   return (
-    <Widget title="Live Scores" isLoading={isLoading}>
+    <Widget title="Live Scores" isLoading={isLoading} id={id}>
       <Tabs defaultValue="NBA" onValueChange={(value) => setCurrentSport(value as SportType)} className="w-full">
         <TabsList className="grid grid-cols-4 w-full">
           {Object.keys(sportIcons).map((sport) => (

@@ -1,9 +1,12 @@
-
 import React, { useEffect, useState } from 'react';
 import { Widget } from './Widget';
 import { cn } from '@/lib/utils';
 
-export const ClockWidget = () => {
+interface ClockWidgetProps {
+  id?: string;
+}
+
+export const ClockWidget: React.FC<ClockWidgetProps> = ({ id }) => {
   const [time, setTime] = useState(new Date());
   
   useEffect(() => {
@@ -30,7 +33,7 @@ export const ClockWidget = () => {
   const formatTime = (value: number) => value.toString().padStart(2, '0');
   
   return (
-    <Widget title="Clock" className="md:row-span-1">
+    <Widget title="Clock" className="md:row-span-1" id={id}>
       <div className="flex flex-col items-center justify-center h-full py-4">
         <div className="text-4xl font-light tracking-tight mb-2">
           {formatTime(hours12)}:
