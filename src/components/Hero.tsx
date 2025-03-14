@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Container } from "./Layout";
@@ -13,7 +14,7 @@ import {
 
 export const Hero = () => {
   return (
-    <section className="relative min-h-screen py-20 flex items-center">
+    <section className="relative min-h-screen py-12 md:py-20 flex items-center">
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
         <div className="absolute right-0 top-0 -translate-y-1/4 translate-x-1/4 w-3/4 h-3/4 rounded-full bg-primary opacity-[0.02] blur-3xl" />
@@ -21,7 +22,7 @@ export const Hero = () => {
       </div>
 
       <Container>
-        <div className="flex flex-col md:flex-row items-center">
+        <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
           {/* Left column: Intro content */}
           <div className="w-full md:w-2/3 animate-fade-in">
             <div className="inline-block mb-6 px-3 py-1 rounded-md border border-primary/20 bg-primary/5 text-primary text-sm font-medium">
@@ -31,34 +32,17 @@ export const Hero = () => {
               </div>
             </div>
 
-            <div className="flex flex-row gap-4">
-              <div className="flex flex-col gap-4">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-6">
-                  Crafting beautiful digital{" "}
-                  <span className="text-primary">experiences</span>
-                </h1>
-                <p className="text-lg text-muted-foreground mb-8 max-w-2xl leading-relaxed">
-                  Valued expert with 5+ years of experience driving significant
-                  improvements in technical product management, frontend
-                  engineering, and software design. Adept at prioritizing clear
-                  communication and strong cross-team collaboration.
-                </p>
-              </div>
-              {/* Right column: Profile image */}
-              <div className="w-full md:w-1/3 flex justify-center md:justify-end order-first md:order-last">
-                <div className="relative">
-                  <div className="w-40 h-40 md:w-56 md:h-56 rounded-2xl overflow-hidden border-4 border-primary/20 shadow-xl">
-                    <img
-                      src="/lovable-uploads/d0591870-cc31-4b6d-be04-7e285801a66b.png"
-                      alt="Jacob Giamanco"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="absolute -bottom-3 -right-3 bg-primary text-white px-2 py-1 md:px-3 md:py-1.5 rounded-lg shadow-md text-xs md:text-sm">
-                    <span className="font-medium">5+ Years Experience</span>
-                  </div>
-                </div>
-              </div>
+            <div className="flex flex-col gap-4">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-4 md:mb-6">
+                Crafting beautiful digital{" "}
+                <span className="text-primary">experiences</span>
+              </h1>
+              <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8 max-w-2xl leading-relaxed">
+                Valued expert with 5+ years of experience driving significant
+                improvements in technical product management, frontend
+                engineering, and software design. Adept at prioritizing clear
+                communication and strong cross-team collaboration.
+              </p>
             </div>
 
             <div className="flex flex-wrap gap-4 mb-10">
@@ -98,7 +82,7 @@ export const Hero = () => {
             </div>
 
             {/* Skills section from About */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
               <SkillItem
                 icon={<Briefcase className="h-5 w-5" />}
                 title="Technical Product Management"
@@ -124,11 +108,27 @@ export const Hero = () => {
               />
             </div>
           </div>
+
+          {/* Right column: Profile image */}
+          <div className="w-full md:w-1/3 flex justify-center md:justify-end">
+            <div className="relative transform transition-all duration-300 hover:scale-105">
+              <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden border-4 border-primary/20 shadow-xl">
+                <img
+                  src="/lovable-uploads/d0591870-cc31-4b6d-be04-7e285801a66b.png"
+                  alt="Jacob Giamanco"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="absolute -bottom-3 -right-3 bg-primary text-white px-3 py-1.5 rounded-lg shadow-md text-sm font-medium">
+                <span>5+ Years Experience</span>
+              </div>
+            </div>
+          </div>
         </div>
       </Container>
 
       {/* Centered scroll down button with added spacing */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-hover-bounce mt-12 pt-8">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-hover-bounce hidden md:flex flex-col items-center">
         <a
           href="#skills"
           className="flex flex-col items-center text-muted-foreground hover:text-primary transition-colors"
@@ -148,7 +148,7 @@ type SkillItemProps = {
 };
 
 const SkillItem = ({ icon, title, description }: SkillItemProps) => (
-  <div className="flex gap-3 items-start">
+  <div className="flex gap-3 items-start p-3 rounded-lg transition-all duration-300 hover:bg-secondary/30">
     <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
       {icon}
     </div>
