@@ -1,6 +1,5 @@
 
 import { Game, SportType, getMockDataForSport } from './sportsData';
-import { useToast } from '@/hooks/use-toast';
 
 // This would be replaced with actual API integration
 export const fetchSportsData = async (sport: SportType): Promise<Game[]> => {
