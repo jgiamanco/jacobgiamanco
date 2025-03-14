@@ -16,9 +16,9 @@ export const Hero = () => {
       </div>
       
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left column: Intro content */}
-          <div className="animate-fade-in">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* Left column: Intro content - takes up more space */}
+          <div className="lg:col-span-8 animate-fade-in">
             <div className="inline-block mb-6 px-3 py-1 rounded-md border border-primary/20 bg-primary/5 text-primary text-sm font-medium">
               <div className="flex items-center gap-1.5">
                 <Code className="h-3.5 w-3.5" />
@@ -81,17 +81,17 @@ export const Hero = () => {
             </div>
           </div>
           
-          {/* Right column: Profile image */}
-          <div className="flex justify-center lg:justify-end order-first lg:order-last">
+          {/* Right column: Profile image - smaller and to the right of the headline */}
+          <div className="lg:col-span-4 flex justify-center">
             <div className="relative">
-              <div className="w-64 h-64 md:w-96 md:h-96 rounded-2xl overflow-hidden border-4 border-primary/20 shadow-xl">
+              <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden border-4 border-primary/20 shadow-xl">
                 <img 
                   src="/lovable-uploads/d0591870-cc31-4b6d-be04-7e285801a66b.png" 
                   alt="Jacob Giamanco" 
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover"
                 />
               </div>
-              <div className="absolute -bottom-4 -right-4 bg-primary text-white px-4 py-2 rounded-lg shadow-md">
+              <div className="absolute -bottom-4 -right-4 bg-primary text-white px-3 py-1.5 rounded-lg shadow-md text-sm">
                 <span className="font-medium">5+ Years Experience</span>
               </div>
             </div>
@@ -99,7 +99,8 @@ export const Hero = () => {
         </div>
       </Container>
       
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-hover-bounce">
+      {/* Centered scroll down button with added spacing */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-hover-bounce mt-12 pt-8">
         <a href="#skills" className="flex flex-col items-center text-muted-foreground hover:text-primary transition-colors">
           <span className="text-sm mb-2">Scroll Down</span>
           <ArrowDown className="h-5 w-5" />
