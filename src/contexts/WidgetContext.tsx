@@ -10,6 +10,8 @@ export interface WidgetPosition {
   h: number;
   minW?: number;
   minH?: number;
+  maxW?: number;
+  maxH?: number;
 }
 
 interface WidgetContextType {
@@ -18,16 +20,16 @@ interface WidgetContextType {
   resetLayouts: () => void;
 }
 
-// Define default widget positions
+// Define default widget positions with more consistent sizing constraints
 const defaultWidgetLayouts: Layout[] = [
-  { i: 'weather', x: 0, y: 0, w: 1, h: 2, minW: 1, minH: 2 },
-  { i: 'clock', x: 1, y: 0, w: 1, h: 1, minW: 1, minH: 1 },
-  { i: 'sports', x: 2, y: 0, w: 1, h: 2, minW: 1, minH: 2 },
-  { i: 'resume', x: 1, y: 1, w: 1, h: 1, minW: 1, minH: 1 },
-  { i: 'stocks', x: 0, y: 2, w: 1, h: 2, minW: 1, minH: 2 },
-  { i: 'chat', x: 1, y: 2, w: 2, h: 2, minW: 1, minH: 2 },
-  { i: 'discord', x: 2, y: 4, w: 1, h: 2, minW: 1, minH: 2 },
-  { i: 'skills', x: 0, y: 4, w: 2, h: 2, minW: 1, minH: 1 },
+  { i: 'weather', x: 0, y: 0, w: 1, h: 2, minW: 1, minH: 2, maxW: 1, maxH: 3 },
+  { i: 'clock', x: 1, y: 0, w: 1, h: 1, minW: 1, minH: 1, maxW: 1, maxH: 2 },
+  { i: 'sports', x: 2, y: 0, w: 1, h: 2, minW: 1, minH: 2, maxW: 1, maxH: 4 },
+  { i: 'resume', x: 1, y: 1, w: 1, h: 1, minW: 1, minH: 1, maxW: 1, maxH: 2 },
+  { i: 'stocks', x: 0, y: 2, w: 1, h: 2, minW: 1, minH: 2, maxW: 2, maxH: 3 },
+  { i: 'chat', x: 1, y: 2, w: 2, h: 2, minW: 2, minH: 2, maxW: 3, maxH: 3 },
+  { i: 'discord', x: 2, y: 4, w: 1, h: 2, minW: 1, minH: 2, maxW: 1, maxH: 3 },
+  { i: 'skills', x: 0, y: 4, w: 2, h: 2, minW: 1, minH: 1, maxW: 3, maxH: 3 },
 ];
 
 const WidgetContext = createContext<WidgetContextType>({

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Layout, Container } from '@/components/Layout';
 import { Header } from '@/components/Header';
@@ -56,7 +55,6 @@ const Index = () => {
     updateLayouts(newLayout);
   };
 
-  // Map widget components to their IDs
   const widgetComponents: Record<string, React.ReactNode> = {
     weather: <WeatherWidget />,
     clock: <ClockWidget />,
@@ -117,6 +115,10 @@ const Index = () => {
                 draggableHandle=".react-grid-draghandle"
                 isBounded={true}
                 compactType="vertical"
+                preventCollision={false}
+                isResizable={true}
+                isDraggable={true}
+                containerPadding={[0, 0]}
               >
                 {layouts.map((layout) => (
                   <div key={layout.i} className="widget-wrapper">
