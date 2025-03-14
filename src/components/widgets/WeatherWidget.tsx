@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Widget } from './Widget';
 import { 
@@ -17,7 +16,7 @@ import {
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useTheme } from '@/components/theme-context';
+import { useTheme } from '@/components/ThemeProvider';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 

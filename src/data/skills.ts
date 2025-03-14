@@ -1,4 +1,5 @@
-import { useTheme } from '@/components/theme-context';
+
+import { useTheme } from '@/components/ThemeProvider';
 
 export interface Skill {
   name: string;
