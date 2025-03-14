@@ -35,14 +35,18 @@ export const Hero = () => {
               Contact Me
             </Button>
             <div className="flex gap-2">
-              <Button size="lg" variant="outline" className="rounded-md flex items-center gap-2">
-                <Linkedin className="h-5 w-5" />
-                <span className="hidden sm:inline">LinkedIn</span>
-              </Button>
-              <Button size="lg" variant="outline" className="rounded-md flex items-center gap-2">
-                <Github className="h-5 w-5" />
-                <span className="hidden sm:inline">GitHub</span>
-              </Button>
+              <a href="https://www.linkedin.com/in/jacob-giamanco" target="_blank" rel="noopener noreferrer">
+                <Button size="icon" variant="outline" className="rounded-md h-11 w-11 flex items-center justify-center">
+                  <Linkedin className="h-5 w-5" />
+                  <span className="sr-only">LinkedIn</span>
+                </Button>
+              </a>
+              <a href="https://github.com/jgiamanco" target="_blank" rel="noopener noreferrer">
+                <Button size="icon" variant="outline" className="rounded-md h-11 w-11 flex items-center justify-center">
+                  <Github className="h-5 w-5" />
+                  <span className="sr-only">GitHub</span>
+                </Button>
+              </a>
             </div>
           </div>
         </div>
