@@ -144,29 +144,27 @@ export const StockWidget: React.FC<StockWidgetProps> = ({ id }) => {
     setSelectedStock(null);
   };
 
-  if (selectedStock) {
-    const stock = stocks.find(s => s.symbol === selectedStock);
-    if (!stock) return null;
-    
-    return (
-      <Widget title={`${stock.symbol} Details`} id={id}>
-        <StockDetail 
-          stock={stock} 
-          historicalData={historicalData[stock.symbol]} 
-          onBackClick={handleBackClick} 
-        />
-      </Widget>
-    );
-  }
-
   return (
-    <Widget title="Stocks" id={id}>
-      <StockList 
-        stocks={stocks} 
-        isLoading={isLoading} 
-        onAddStock={handleAddStock} 
-        onStockClick={handleStockClick} 
-      />
+    <Widget title={selectedStock ? `${selectedStock} Details` : "Stocks"} isLoading={isLoading} id={id}>
+      {selectedStock ? (
+        <>
+          {stocks.find(s => s.symbol === selectedStock) && (
+            <StockDetail 
+              stock={stocks.find(s => s.symbol === selectedStock)!} 
+              historicalData={historicalData[selectedStock]} 
+              onBackClick={handleBackClick} 
+            />
+          )}
+        </>
+      ) : (
+        <div className="h-full">
+          <StockList 
+            stocks={stocks} 
+            onAddStock={handleAddStock} 
+            onStockClick={handleStockClick} 
+          />
+        </div>
+      )}
     </Widget>
   );
 };

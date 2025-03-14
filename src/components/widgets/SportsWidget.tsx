@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Widget } from './Widget';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -38,8 +39,8 @@ export const SportsWidget: React.FC<SportsWidgetProps> = ({ id }) => {
   }, [currentSport, toast]);
 
   return (
-    <Widget title="Live Scores" isLoading={isLoading} id={id}>
-      <Tabs defaultValue="NBA" onValueChange={(value) => setCurrentSport(value as SportType)} className="w-full">
+    <Widget title="Live Scores" isLoading={isLoading} id={id} className="flex flex-col">
+      <Tabs defaultValue="NBA" onValueChange={(value) => setCurrentSport(value as SportType)} className="w-full flex-1 flex flex-col">
         <TabsList className="grid grid-cols-4 w-full">
           {Object.keys(sportIcons).map((sport) => (
             <TabsTrigger key={sport} value={sport} className="flex items-center gap-2">
@@ -49,14 +50,16 @@ export const SportsWidget: React.FC<SportsWidgetProps> = ({ id }) => {
           ))}
         </TabsList>
         
-        {Object.keys(sportIcons).map((sport) => (
-          <SportTab 
-            key={sport}
-            sport={sport as SportType} 
-            games={games} 
-            currentSport={currentSport} 
-          />
-        ))}
+        <div className="flex-1 overflow-auto">
+          {Object.keys(sportIcons).map((sport) => (
+            <SportTab 
+              key={sport}
+              sport={sport as SportType} 
+              games={games} 
+              currentSport={currentSport} 
+            />
+          ))}
+        </div>
       </Tabs>
     </Widget>
   );

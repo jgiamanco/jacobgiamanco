@@ -37,7 +37,7 @@ export const Widget: React.FC<WidgetProps> = ({
   return (
     <div 
       className={cn(
-        "widget animate-scale-in h-full", 
+        "widget animate-scale-in h-full flex flex-col", 
         interactive && "interactive-widget",
         isHovered && "ring-1 ring-primary/30 shadow-lg",
         className
@@ -47,7 +47,7 @@ export const Widget: React.FC<WidgetProps> = ({
       id={id}
     >
       {(title || headerContent) && (
-        <div className="widget-header flex items-center justify-between">
+        <div className="widget-header flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-2">
             <div className="react-grid-draghandle cursor-move">
               <GripVertical className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors" />
@@ -82,9 +82,9 @@ export const Widget: React.FC<WidgetProps> = ({
           </div>
         </div>
       )}
-      <div className={cn("widget-content relative h-full", isHovered && "bg-secondary/20")}>
+      <div className={cn("widget-content relative flex-1 overflow-auto", isHovered && "bg-secondary/20")}>
         {isLoading ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-xs">
+          <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-xs z-10">
             <Loader2 className="h-5 w-5 animate-spin text-primary" />
           </div>
         ) : null}
