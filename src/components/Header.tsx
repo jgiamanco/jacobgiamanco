@@ -17,6 +17,18 @@ export const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+      const sectionTop = section.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({
+        top: sectionTop - headerHeight,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <header 
       className={cn(
@@ -30,9 +42,24 @@ export const Header = () => {
             <span className="text-primary font-semibold">Jacob</span> Giamanco
           </div>
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#about" className="text-sm hover:text-primary transition-colors">About</a>
-            <a href="#skills" className="text-sm hover:text-primary transition-colors">Skills</a>
-            <a href="#widgets" className="text-sm hover:text-primary transition-colors">Widgets</a>
+            <button 
+              onClick={() => scrollToSection('about')}
+              className="text-sm hover:text-primary transition-colors"
+            >
+              About
+            </button>
+            <button 
+              onClick={() => scrollToSection('skills')}
+              className="text-sm hover:text-primary transition-colors"
+            >
+              Skills
+            </button>
+            <button 
+              onClick={() => scrollToSection('widgets')}
+              className="text-sm hover:text-primary transition-colors"
+            >
+              Widgets
+            </button>
           </nav>
           <div className="flex items-center space-x-2">
             <ThemeToggle />

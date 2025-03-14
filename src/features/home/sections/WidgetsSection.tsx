@@ -11,7 +11,7 @@ import { DiscordWidget } from '@/components/widgets/DiscordWidget';
 
 export const WidgetsSection = () => {
   return (
-    <section id="widgets" className="py-10">
+    <section id="widgets" className="py-10 pt-24 md:pt-28">
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <WeatherWidget />
