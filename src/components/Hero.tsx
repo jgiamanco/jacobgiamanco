@@ -16,91 +16,97 @@ export const Hero = () => {
       </div>
       
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          {/* Left column: Intro content - takes up more space */}
-          <div className="lg:col-span-8 animate-fade-in">
-            <div className="inline-block mb-6 px-3 py-1 rounded-md border border-primary/20 bg-primary/5 text-primary text-sm font-medium">
-              <div className="flex items-center gap-1.5">
-                <Code className="h-3.5 w-3.5" />
-                <span>Frontend Developer & Product Manager</span>
-              </div>
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-6">
-              Crafting beautiful digital <span className="text-primary">experiences</span>
-            </h1>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl leading-relaxed">
-              Valued expert with 5+ years of experience driving significant improvements in technical product management, 
-              frontend engineering, and software design. Adept at prioritizing clear communication 
-              and strong cross-team collaboration.
-            </p>
-            <div className="flex flex-wrap gap-4 mb-10">
-              <Button size="lg" className="rounded-md" id="contact-button">
-                Contact Me
-              </Button>
-              <div className="flex gap-2">
-                <a href="https://www.linkedin.com/in/jacob-giamanco" target="_blank" rel="noopener noreferrer">
-                  <Button size="icon" variant="outline" className="rounded-md h-11 w-11 flex items-center justify-center">
-                    <Linkedin className="h-5 w-5" />
-                    <span className="sr-only">LinkedIn</span>
-                  </Button>
-                </a>
-                <a href="https://github.com/jgiamanco" target="_blank" rel="noopener noreferrer">
-                  <Button size="icon" variant="outline" className="rounded-md h-11 w-11 flex items-center justify-center">
-                    <Github className="h-5 w-5" />
-                    <span className="sr-only">GitHub</span>
-                  </Button>
-                </a>
-              </div>
-            </div>
-            
-            {/* Skills section from About */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-              <SkillItem 
-                icon={<Briefcase className="h-5 w-5" />} 
-                title="Technical Product Management" 
-                description="Managed and optimized content for over 60 products, resulting in significant cost savings."
-              />
-              
-              <SkillItem 
-                icon={<Code className="h-5 w-5" />} 
-                title="Frontend Engineering" 
-                description="Crafted intuitive web experiences using modern JavaScript frameworks and UI/UX principles."
-              />
-              
-              <SkillItem 
-                icon={<Bot className="h-5 w-5" />} 
-                title="Automation Specialist" 
-                description="Implemented automation scripts to streamline processes and improve efficiency."
-              />
-              
-              <SkillItem 
-                icon={<Users className="h-5 w-5" />} 
-                title="Team Leadership" 
-                description="Respected and influential team leader with a natural ability to exceed aggressive goals."
-              />
+        <div className="flex flex-col gap-8 animate-fade-in">
+          {/* Header section with intro tag */}
+          <div className="inline-block mb-4 px-3 py-1 rounded-md border border-primary/20 bg-primary/5 text-primary text-sm font-medium">
+            <div className="flex items-center gap-1.5">
+              <Code className="h-3.5 w-3.5" />
+              <span>Frontend Developer & Product Manager</span>
             </div>
           </div>
           
-          {/* Right column: Profile image - smaller and to the right of the headline */}
-          <div className="lg:col-span-4 flex justify-center">
-            <div className="relative">
-              <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden border-4 border-primary/20 shadow-xl">
-                <img 
-                  src="/lovable-uploads/d0591870-cc31-4b6d-be04-7e285801a66b.png" 
-                  alt="Jacob Giamanco" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="absolute -bottom-4 -right-4 bg-primary text-white px-3 py-1.5 rounded-lg shadow-md text-sm">
-                <span className="font-medium">5+ Years Experience</span>
+          {/* Main headline and profile picture in the same row */}
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            <div className="flex-1">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-6">
+                Crafting beautiful digital <span className="text-primary">experiences</span>
+              </h1>
+              <p className="text-lg text-muted-foreground mb-8 max-w-2xl leading-relaxed">
+                Valued expert with 5+ years of experience driving significant improvements in technical product management, 
+                frontend engineering, and software design. Adept at prioritizing clear communication 
+                and strong cross-team collaboration.
+              </p>
+              
+              {/* Contact buttons */}
+              <div className="flex flex-wrap gap-4 mb-10">
+                <Button size="lg" className="rounded-md" id="contact-button">
+                  Contact Me
+                </Button>
+                <div className="flex gap-2">
+                  <a href="https://www.linkedin.com/in/jacob-giamanco" target="_blank" rel="noopener noreferrer">
+                    <Button size="icon" variant="outline" className="rounded-md h-11 w-11 flex items-center justify-center">
+                      <Linkedin className="h-5 w-5" />
+                      <span className="sr-only">LinkedIn</span>
+                    </Button>
+                  </a>
+                  <a href="https://github.com/jgiamanco" target="_blank" rel="noopener noreferrer">
+                    <Button size="icon" variant="outline" className="rounded-md h-11 w-11 flex items-center justify-center">
+                      <Github className="h-5 w-5" />
+                      <span className="sr-only">GitHub</span>
+                    </Button>
+                  </a>
+                </div>
               </div>
             </div>
+            
+            {/* Profile image - to the right of headline */}
+            <div className="lg:self-start">
+              <div className="relative">
+                <div className="w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden border-4 border-primary/20 shadow-xl">
+                  <img 
+                    src="/lovable-uploads/d0591870-cc31-4b6d-be04-7e285801a66b.png" 
+                    alt="Jacob Giamanco" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="absolute -bottom-3 -right-3 bg-primary text-white px-2 py-1 rounded-lg shadow-md text-sm">
+                  <span className="font-medium">5+ Years</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Skills section from About */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+            <SkillItem 
+              icon={<Briefcase className="h-5 w-5" />} 
+              title="Technical Product Management" 
+              description="Managed and optimized content for over 60 products, resulting in significant cost savings."
+            />
+            
+            <SkillItem 
+              icon={<Code className="h-5 w-5" />} 
+              title="Frontend Engineering" 
+              description="Crafted intuitive web experiences using modern JavaScript frameworks and UI/UX principles."
+            />
+            
+            <SkillItem 
+              icon={<Bot className="h-5 w-5" />} 
+              title="Automation Specialist" 
+              description="Implemented automation scripts to streamline processes and improve efficiency."
+            />
+            
+            <SkillItem 
+              icon={<Users className="h-5 w-5" />} 
+              title="Team Leadership" 
+              description="Respected and influential team leader with a natural ability to exceed aggressive goals."
+            />
           </div>
         </div>
       </Container>
       
       {/* Centered scroll down button with added spacing */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-hover-bounce mt-12 pt-8">
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-hover-bounce mt-16 pt-8">
         <a href="#skills" className="flex flex-col items-center text-muted-foreground hover:text-primary transition-colors">
           <span className="text-sm mb-2">Scroll Down</span>
           <ArrowDown className="h-5 w-5" />
