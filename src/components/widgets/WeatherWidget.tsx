@@ -19,6 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/ThemeProvider';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 interface WeatherData {
   temperature: number;
@@ -36,9 +37,10 @@ export const WeatherWidget = () => {
   const [location, setLocation] = useState('San Diego, CA');
   const [inputLocation, setInputLocation] = useState('');
   const { theme } = useTheme();
-
-  // OpenWeather API key - this is a free tier key and can be exposed in the client
-  const API_KEY = 'f78fea3f6b31487ba67225551231206';
+  const { toast } = useToast();
+  
+  // We'll use OpenWeatherMap API, which has a free tier
+  const API_KEY = 'da0f9c8d90bde7e619c3ec47766a42f4';
   
   useEffect(() => {
     fetchWeather(location);
@@ -47,8 +49,9 @@ export const WeatherWidget = () => {
   const fetchWeather = async (locationQuery: string) => {
     setIsLoading(true);
     try {
+      // Using OpenWeatherMap API
       const response = await fetch(
-        `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${encodeURIComponent(locationQuery)}&aqi=no`
+        `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(locationQuery)}&units=imperial&appid=${API_KEY}`
       );
       
       if (!response.ok) {
@@ -58,16 +61,22 @@ export const WeatherWidget = () => {
       const data = await response.json();
       
       setWeather({
-        temperature: data.current.temp_f,
-        condition: data.current.condition.text.toLowerCase(),
-        location: `${data.location.name}, ${data.location.region}`,
-        feelsLike: data.current.feelslike_f,
-        humidity: data.current.humidity,
-        description: data.current.condition.text,
-        windSpeed: data.current.wind_mph
+        temperature: data.main.temp,
+        condition: data.weather[0].main.toLowerCase(),
+        location: `${data.name}, ${data.sys.country}`,
+        feelsLike: data.main.feels_like,
+        humidity: data.main.humidity,
+        description: data.weather[0].description,
+        windSpeed: data.wind.speed
       });
     } catch (error) {
       console.error('Error fetching weather:', error);
+      toast({
+        title: "Weather data error",
+        description: "Could not fetch weather data for this location",
+        variant: "destructive",
+      });
+      
       // Fallback to default data on error
       setWeather({
         temperature: 72,

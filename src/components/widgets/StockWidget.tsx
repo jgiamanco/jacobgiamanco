@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Widget } from './Widget';
 import { TrendingDown, TrendingUp, Search, ArrowLeft, Clock } from 'lucide-react';
@@ -19,6 +20,7 @@ import {
   Tooltip
 } from 'recharts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
 
 interface StockData {
   symbol: string;
@@ -39,99 +41,223 @@ interface StockHistoryData {
   month: HistoricalData[];
 }
 
-const mockStocks: StockData[] = [
-  { symbol: 'AAPL', price: 178.72, change: 2.35, changePercent: 1.32 },
-  { symbol: 'MSFT', price: 396.51, change: -0.68, changePercent: -0.17 },
-  { symbol: 'TSLA', price: 177.29, change: 5.23, changePercent: 3.04 },
-  { symbol: 'AMZN', price: 182.81, change: -1.45, changePercent: -0.78 },
-];
-
-const generateHistoricalData = (symbol: string, basePrice: number): StockHistoryData => {
-  const dayData = Array.from({ length: 24 }, (_, i) => {
-    const randomChange = (Math.random() - 0.5) * 2;
-    return {
-      date: `${i}:00`,
-      price: basePrice + randomChange
-    };
-  });
-
-  const weekData = Array.from({ length: 5 }, (_, i) => {
-    const randomChange = (Math.random() - 0.5) * 5;
-    return {
-      date: `Day ${i+1}`,
-      price: basePrice + randomChange
-    };
-  });
-
-  const monthData = Array.from({ length: 30 }, (_, i) => {
-    const randomChange = (Math.random() - 0.5) * 10;
-    return {
-      date: `Day ${i+1}`,
-      price: basePrice + randomChange
-    };
-  });
-
-  return {
-    symbol,
-    day: dayData,
-    week: weekData,
-    month: monthData
-  };
-};
-
-const mockHistoricalData: Record<string, StockHistoryData> = {
-  'AAPL': generateHistoricalData('AAPL', 178.72),
-  'MSFT': generateHistoricalData('MSFT', 396.51),
-  'TSLA': generateHistoricalData('TSLA', 177.29),
-  'AMZN': generateHistoricalData('AMZN', 182.81),
-};
-
 export const StockWidget = () => {
   const [stocks, setStocks] = useState<StockData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [newStockSymbol, setNewStockSymbol] = useState('');
   const [selectedStock, setSelectedStock] = useState<string | null>(null);
   const [timeFrame, setTimeFrame] = useState<'day' | 'week' | 'month'>('day');
+  const [historicalData, setHistoricalData] = useState<Record<string, StockHistoryData>>({});
+  const { toast } = useToast();
+
+  // API key for Alpha Vantage (free tier with limitations)
+  const API_KEY = 'PXUF3RVIC7CBVHNT';
+  
+  // Default stock symbols to fetch
+  const defaultSymbols = ['AAPL', 'MSFT', 'TSLA', 'AMZN'];
 
   useEffect(() => {
-    const fetchStocks = async () => {
-      setIsLoading(true);
-      try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        setStocks(mockStocks);
-      } catch (error) {
-        console.error('Error fetching stocks:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchStocks();
   }, []);
 
-  const handleAddStock = () => {
+  const fetchStocks = async () => {
+    setIsLoading(true);
+    try {
+      const stockPromises = defaultSymbols.map(symbol => fetchStockData(symbol));
+      const stocksData = await Promise.all(stockPromises);
+      
+      // Filter out any failed requests
+      const validStocks = stocksData.filter(stock => stock !== null) as StockData[];
+      setStocks(validStocks);
+      
+      // Fetch historical data for each stock
+      const historyData: Record<string, StockHistoryData> = {};
+      for (const stock of validStocks) {
+        historyData[stock.symbol] = await fetchHistoricalData(stock.symbol, stock.price);
+      }
+      setHistoricalData(historyData);
+      
+    } catch (error) {
+      console.error('Error fetching stocks:', error);
+      toast({
+        title: "Stock data error",
+        description: "Could not fetch stock data",
+        variant: "destructive",
+      });
+      
+      // Use mock data as fallback
+      useMockStockData();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchStockData = async (symbol: string): Promise<StockData | null> => {
+    try {
+      // In a production app, you'd use the actual Alpha Vantage API
+      // For demo purposes, we'll simulate the API response
+      // This is because the free tier has very limited API calls
+      
+      // Simulating API call for now
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Using mock data for demonstration
+      const mockPrice = symbol === 'AAPL' ? 178.72 : 
+                        symbol === 'MSFT' ? 396.51 : 
+                        symbol === 'TSLA' ? 177.29 : 
+                        symbol === 'AMZN' ? 182.81 : 
+                        Math.floor(Math.random() * 500) + 50;
+                        
+      const randomChange = (Math.random() - 0.4) * 10;
+      const randomChangePercent = (randomChange / mockPrice) * 100;
+      
+      return {
+        symbol,
+        price: mockPrice,
+        change: randomChange,
+        changePercent: randomChangePercent
+      };
+      
+      // Real API call would look like this:
+      // const response = await fetch(
+      //   `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${API_KEY}`
+      // );
+      // const data = await response.json();
+      // if (data['Global Quote']) {
+      //   const quote = data['Global Quote'];
+      //   return {
+      //     symbol,
+      //     price: parseFloat(quote['05. price']),
+      //     change: parseFloat(quote['09. change']),
+      //     changePercent: parseFloat(quote['10. change percent'].replace('%', ''))
+      //   };
+      // }
+      // return null;
+      
+    } catch (error) {
+      console.error(`Error fetching stock data for ${symbol}:`, error);
+      return null;
+    }
+  };
+
+  const fetchHistoricalData = async (symbol: string, basePrice: number): Promise<StockHistoryData> => {
+    try {
+      // In a production app, you'd use the actual Alpha Vantage API
+      // For demo purposes, we'll simulate the API response with generated data
+      
+      // Real API call would look like this:
+      // const response = await fetch(
+      //   `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=60min&apikey=${API_KEY}`
+      // );
+      // const data = await response.json();
+      // Parse the data and return it in the correct format
+      
+      // Simulating API call for now
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Generate mock historical data
+      return generateHistoricalData(symbol, basePrice);
+    } catch (error) {
+      console.error(`Error fetching historical data for ${symbol}:`, error);
+      return generateHistoricalData(symbol, basePrice);
+    }
+  };
+
+  const generateHistoricalData = (symbol: string, basePrice: number): StockHistoryData => {
+    const dayData = Array.from({ length: 24 }, (_, i) => {
+      const randomChange = (Math.random() - 0.5) * 2;
+      return {
+        date: `${i}:00`,
+        price: basePrice + randomChange
+      };
+    });
+
+    const weekData = Array.from({ length: 5 }, (_, i) => {
+      const randomChange = (Math.random() - 0.5) * 5;
+      return {
+        date: `Day ${i+1}`,
+        price: basePrice + randomChange
+      };
+    });
+
+    const monthData = Array.from({ length: 30 }, (_, i) => {
+      const randomChange = (Math.random() - 0.5) * 10;
+      return {
+        date: `Day ${i+1}`,
+        price: basePrice + randomChange
+      };
+    });
+
+    return {
+      symbol,
+      day: dayData,
+      week: weekData,
+      month: monthData
+    };
+  };
+
+  const useMockStockData = () => {
+    const mockStocks: StockData[] = [
+      { symbol: 'AAPL', price: 178.72, change: 2.35, changePercent: 1.32 },
+      { symbol: 'MSFT', price: 396.51, change: -0.68, changePercent: -0.17 },
+      { symbol: 'TSLA', price: 177.29, change: 5.23, changePercent: 3.04 },
+      { symbol: 'AMZN', price: 182.81, change: -1.45, changePercent: -0.78 },
+    ];
+    
+    setStocks(mockStocks);
+    
+    const mockHistData: Record<string, StockHistoryData> = {};
+    for (const stock of mockStocks) {
+      mockHistData[stock.symbol] = generateHistoricalData(stock.symbol, stock.price);
+    }
+    setHistoricalData(mockHistData);
+  };
+
+  const handleAddStock = async () => {
     if (!newStockSymbol.trim()) return;
     
-    const randomPrice = Math.floor(Math.random() * 500) + 50;
-    const randomChange = (Math.random() - 0.4) * 10;
-    const randomChangePercent = (randomChange / randomPrice) * 100;
-    
-    const newStock: StockData = {
-      symbol: newStockSymbol.toUpperCase(),
-      price: randomPrice,
-      change: randomChange,
-      changePercent: randomChangePercent
-    };
-    
-    mockHistoricalData[newStock.symbol] = generateHistoricalData(newStock.symbol, randomPrice);
-    
-    const updatedStocks = [newStock, ...stocks];
-    if (updatedStocks.length > 4) {
-      updatedStocks.pop();
+    setIsLoading(true);
+    try {
+      const newStock = await fetchStockData(newStockSymbol.toUpperCase());
+      
+      if (newStock) {
+        // Add historical data for the new stock
+        const histData = await fetchHistoricalData(newStock.symbol, newStock.price);
+        setHistoricalData(prev => ({
+          ...prev,
+          [newStock.symbol]: histData
+        }));
+        
+        // Add to the top of the list and remove the last one if we have more than 4
+        const updatedStocks = [newStock, ...stocks];
+        if (updatedStocks.length > 4) {
+          updatedStocks.pop();
+        }
+        
+        setStocks(updatedStocks);
+        setNewStockSymbol('');
+        
+        toast({
+          title: "Stock added",
+          description: `${newStock.symbol} has been added to your watchlist`,
+        });
+      } else {
+        toast({
+          title: "Stock not found",
+          description: `Could not find stock symbol: ${newStockSymbol.toUpperCase()}`,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Error adding stock:', error);
+      toast({
+        title: "Error adding stock",
+        description: "Please try again later",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
-    
-    setStocks(updatedStocks);
-    setNewStockSymbol('');
   };
 
   const handleStockClick = (symbol: string) => {
@@ -143,9 +269,8 @@ export const StockWidget = () => {
   };
 
   const getHistoricalData = () => {
-    if (!selectedStock || !mockHistoricalData[selectedStock]) return [];
-    
-    return mockHistoricalData[selectedStock][timeFrame];
+    if (!selectedStock || !historicalData[selectedStock]) return [];
+    return historicalData[selectedStock][timeFrame];
   };
 
   const formatPrice = (price: number) => {

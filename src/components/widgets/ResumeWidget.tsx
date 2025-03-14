@@ -3,11 +3,39 @@ import React from 'react';
 import { Widget } from './Widget';
 import { Button } from '@/components/ui/button';
 import { Download, FileText } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export const ResumeWidget = () => {
+  const { toast } = useToast();
+  
   const handleDownload = () => {
-    // In a real implementation, this would download an actual resume file
-    alert('Resume download functionality would go here');
+    // URL to your resume PDF file hosted in the public directory
+    const resumeUrl = '/resume.pdf'; 
+    
+    // Create a link element
+    const link = document.createElement('a');
+    link.href = resumeUrl;
+    link.download = 'Jacob_Giamanco_Resume.pdf';
+    
+    // Append to the document, click it, and remove it
+    document.body.appendChild(link);
+    
+    // Try to download the file
+    try {
+      link.click();
+      toast({
+        title: "Download started",
+        description: "Your resume download has started",
+      });
+    } catch (error) {
+      toast({
+        title: "Download failed",
+        description: "Please try again later or contact me directly for a copy",
+        variant: "destructive",
+      });
+    } finally {
+      document.body.removeChild(link);
+    }
   };
 
   return (
