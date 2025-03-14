@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Container } from './Layout';
 import { Button } from '@/components/ui/button';
@@ -21,10 +20,9 @@ export const Header = () => {
     const section = document.getElementById(sectionId);
     if (section) {
       const headerHeight = document.querySelector('header')?.offsetHeight || 0;
-      const offset = sectionId === 'skills' ? headerHeight : headerHeight;
       const sectionTop = section.getBoundingClientRect().top + window.pageYOffset;
       window.scrollTo({
-        top: sectionTop - offset,
+        top: sectionTop - headerHeight,
         behavior: 'smooth'
       });
     }
