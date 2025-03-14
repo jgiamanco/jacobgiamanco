@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Layout, Container } from '@/components/Layout';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
@@ -23,6 +23,8 @@ const Index = () => {
   const [contactModalOpen, setContactModalOpen] = useState(false);
   const { layouts, updateLayouts, resetLayouts } = useWidgetContext();
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const [gridWidth, setGridWidth] = useState(1200);
+  const gridContainerRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     const contactButtons = document.querySelectorAll('#contact-button, #header-contact-button');
@@ -35,6 +37,19 @@ const Index = () => {
         button.removeEventListener('click', () => setContactModalOpen(true));
       });
     };
+  }, []);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (gridContainerRef.current) {
+        setGridWidth(gridContainerRef.current.offsetWidth);
+      }
+    };
+
+    updateWidth(); // Initial width calculation
+    window.addEventListener('resize', updateWidth);
+    
+    return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
   const handleLayoutChange = (newLayout: any) => {
@@ -89,18 +104,19 @@ const Index = () => {
             </Button>
           </div>
           
-          <div className="mb-12">
+          <div className="mb-12" ref={gridContainerRef}>
             {!isMobile ? (
               <GridLayout
                 className="layout"
                 layout={layouts}
                 cols={3}
                 rowHeight={150}
-                width={1200}
+                width={gridWidth}
                 margin={[16, 16]}
                 onLayoutChange={handleLayoutChange}
                 draggableHandle=".react-grid-draghandle"
                 isBounded={true}
+                compactType="vertical"
               >
                 {layouts.map((layout) => (
                   <div key={layout.i} className="widget-wrapper">
