@@ -19,7 +19,7 @@ export const StockList: React.FC<StockListProps> = ({
     <div className="space-y-3 h-full flex flex-col">
       <StockSearch onAddStock={onAddStock} />
       
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1">
         {stocks.length === 0 ? (
           <div className="text-center py-4 text-muted-foreground">
             No stocks to display. Add a stock symbol to get started.

@@ -14,38 +14,28 @@ export interface WidgetPosition {
   maxH?: number;
 }
 
-export type WidgetSize = 'small' | 'medium' | 'large';
-
-export const WIDGET_SIZE_CONFIGS = {
-  small: { w: 1, h: 2 },
-  medium: { w: 2, h: 2 },
-  large: { w: 3, h: 4 }
-};
+// Define default widget positions with consistent sizing constraints
+const defaultWidgetLayouts: Layout[] = [
+  { i: 'weather', x: 0, y: 0, w: 1, h: 2, minW: 1, minH: 2, maxW: 1, maxH: 2 },
+  { i: 'clock', x: 1, y: 0, w: 1, h: 2, minW: 1, minH: 1, maxW: 1, maxH: 2 },
+  { i: 'sports', x: 2, y: 0, w: 1, h: 2, minW: 1, minH: 2, maxW: 1, maxH: 2 },
+  { i: 'resume', x: 1, y: 2, w: 1, h: 2, minW: 1, minH: 1, maxW: 1, maxH: 2 },
+  { i: 'stocks', x: 0, y: 4, w: 1, h: 2, minW: 1, minH: 2, maxW: 1, maxH: 2 },
+  { i: 'chat', x: 1, y: 4, w: 2, h: 2, minW: 2, minH: 2, maxW: 2, maxH: 2 },
+  { i: 'discord', x: 0, y: 6, w: 1, h: 2, minW: 1, minH: 2, maxW: 1, maxH: 2 },
+  // Removed the skills widget from the widget grid
+];
 
 interface WidgetContextType {
   layouts: Layout[];
   updateLayouts: (newLayouts: Layout[]) => void;
   resetLayouts: () => void;
-  updateWidgetSize: (widgetId: string, size: WidgetSize) => void;
 }
-
-// Define default widget positions with consistent sizing constraints
-const defaultWidgetLayouts: Layout[] = [
-  { i: 'weather', x: 0, y: 0, w: 1, h: 2, minW: 1, minH: 2, maxW: 3, maxH: 4 },
-  { i: 'clock', x: 1, y: 0, w: 1, h: 2, minW: 1, minH: 1, maxW: 3, maxH: 4 },
-  { i: 'sports', x: 2, y: 0, w: 1, h: 2, minW: 1, minH: 2, maxW: 3, maxH: 4 },
-  { i: 'resume', x: 1, y: 2, w: 1, h: 2, minW: 1, minH: 1, maxW: 3, maxH: 4 },
-  { i: 'stocks', x: 0, y: 4, w: 1, h: 2, minW: 1, minH: 2, maxW: 3, maxH: 4 },
-  { i: 'chat', x: 1, y: 4, w: 2, h: 2, minW: 1, minH: 2, maxW: 3, maxH: 4 },
-  { i: 'discord', x: 0, y: 6, w: 1, h: 2, minW: 1, minH: 2, maxW: 3, maxH: 4 },
-  { i: 'skills', x: 1, y: 6, w: 2, h: 2, minW: 1, minH: 1, maxW: 3, maxH: 4 },
-];
 
 const WidgetContext = createContext<WidgetContextType>({
   layouts: defaultWidgetLayouts,
   updateLayouts: () => {},
   resetLayouts: () => {},
-  updateWidgetSize: () => {},
 });
 
 export const useWidgetContext = () => useContext(WidgetContext);
@@ -71,24 +61,8 @@ export const WidgetProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     localStorage.removeItem('widget-layouts');
   };
 
-  const updateWidgetSize = (widgetId: string, size: WidgetSize) => {
-    const newLayouts = layouts.map(layout => {
-      if (layout.i === widgetId) {
-        const sizeConfig = WIDGET_SIZE_CONFIGS[size];
-        return {
-          ...layout,
-          w: sizeConfig.w,
-          h: sizeConfig.h
-        };
-      }
-      return layout;
-    });
-    
-    setLayouts(newLayouts);
-  };
-
   return (
-    <WidgetContext.Provider value={{ layouts, updateLayouts, resetLayouts, updateWidgetSize }}>
+    <WidgetContext.Provider value={{ layouts, updateLayouts, resetLayouts }}>
       {children}
     </WidgetContext.Provider>
   );

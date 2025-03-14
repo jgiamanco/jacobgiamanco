@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Layout, Container } from '@/components/Layout';
 import { Header } from '@/components/Header';
@@ -62,8 +63,8 @@ const Index = () => {
     resume: <ResumeWidget id="resume" />,
     stocks: <StockWidget id="stocks" />,
     chat: <ChatWidget id="chat" />,
-    discord: <DiscordWidget id="discord" />,
-    skills: <SkillsWidget id="skills" />
+    discord: <DiscordWidget id="discord" />
+    // Removed skills widget
   };
 
   return (
@@ -93,7 +94,7 @@ const Index = () => {
               <h2 className="section-heading mb-2">Interactive Widgets</h2>
               <p className="text-lg text-muted-foreground max-w-2xl">
                 Explore these interactive widgets showcasing both my technical skills and design sensibilities.
-                Try resizing, dragging, and rearranging them!
+                Try dragging and rearranging them!
               </p>
             </div>
             <Button onClick={resetLayouts} variant="outline" size="sm" className="flex items-center gap-2">
@@ -116,7 +117,7 @@ const Index = () => {
                 isBounded={true}
                 compactType="vertical"
                 preventCollision={false}
-                isResizable={true}
+                isResizable={false}
                 isDraggable={true}
                 containerPadding={[0, 0]}
               >

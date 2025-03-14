@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { Widget } from './Widget';
 import { cn } from '@/lib/utils';
-import { Code, FileCode, Terminal, Database, Braces, Layout, Laptop, Server } from 'lucide-react';
+import { Code, FileCode, Terminal, Database, Braces, Layout } from 'lucide-react';
 
 interface Skill {
   name: string;
@@ -41,13 +42,13 @@ const skills: Skill[] = [
   },
   { 
     name: 'Node.js', 
-    icon: <Server className="h-5 w-5" />, 
+    icon: <Terminal className="h-5 w-5" />, 
     proficiency: 80, 
     color: 'bg-green-600' 
   },
   { 
-    name: 'Next.js', 
-    icon: <Laptop className="h-5 w-5" />, 
+    name: 'Database', 
+    icon: <Database className="h-5 w-5" />, 
     proficiency: 85, 
     color: 'bg-black dark:bg-gray-800' 
   },
@@ -56,19 +57,19 @@ const skills: Skill[] = [
 export const SkillsWidget: React.FC<SkillsWidgetProps> = ({ id }) => {
   return (
     <Widget title="Technical Skills" className="md:col-span-2" id={id}>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         {skills.map((skill) => (
           <div 
             key={skill.name}
-            className="flex flex-col p-4 rounded-lg border border-border/50 hover:border-primary/50 transition-all duration-300 bg-widget/50"
+            className="flex flex-col p-3 rounded-lg border border-border/50 hover:border-primary/50 transition-all duration-300 bg-widget/50"
           >
-            <div className="flex items-center space-x-2 mb-2">
-              <div className={cn("w-8 h-8 rounded-md flex items-center justify-center text-white", skill.color)}>
+            <div className="flex items-center space-x-2 mb-1">
+              <div className={cn("w-7 h-7 rounded-md flex items-center justify-center text-white", skill.color)}>
                 {skill.icon}
               </div>
-              <h4 className="font-medium">{skill.name}</h4>
+              <h4 className="font-medium text-sm">{skill.name}</h4>
             </div>
-            <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden mt-2">
+            <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden mt-1">
               <div 
                 className="h-full bg-primary rounded-full transition-all duration-700"
                 style={{ width: `${skill.proficiency}%` }}
