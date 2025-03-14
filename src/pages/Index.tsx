@@ -9,6 +9,20 @@ import { useContactModal } from '@/hooks/useContactModal';
 const Index = () => {
   const { isOpen, setIsOpen } = useContactModal();
 
+  React.useEffect(() => {
+    // Event listener for contact buttons
+    const contactButtons = document.querySelectorAll('#contact-button, #header-contact-button');
+    contactButtons.forEach(button => {
+      button.addEventListener('click', () => setIsOpen(true));
+    });
+
+    return () => {
+      contactButtons.forEach(button => {
+        button.removeEventListener('click', () => setIsOpen(true));
+      });
+    };
+  }, [setIsOpen]);
+
   return (
     <MainLayout>
       <Hero />
