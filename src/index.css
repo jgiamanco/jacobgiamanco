@@ -35,7 +35,7 @@
 
     --radius: 0.5rem;
     
-    --widget: 0 0% 100%;
+    --widget: 145 30% 98%;
     --widget-foreground: 145 30% 15%;
   }
 
@@ -68,7 +68,7 @@
     --input: 145 20% 20%;
     --ring: 145 60% 35%;
     
-    --widget: 145 25% 15%;
+    --widget: 145 30% 18%;
     --widget-foreground: 0 0% 95%;
   }
 }
