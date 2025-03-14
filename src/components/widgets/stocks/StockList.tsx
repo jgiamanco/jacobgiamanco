@@ -23,13 +23,19 @@ export const StockList: React.FC<StockListProps> = ({
       <div className="space-y-3">
         <StockSearch onAddStock={onAddStock} />
         
-        {stocks.map((stock) => (
-          <StockItem 
-            key={stock.symbol} 
-            stock={stock} 
-            onClick={() => onStockClick(stock.symbol)} 
-          />
-        ))}
+        {stocks.length === 0 && !isLoading ? (
+          <div className="text-center py-4 text-muted-foreground">
+            No stocks to display. Add a stock symbol to get started.
+          </div>
+        ) : (
+          stocks.map((stock) => (
+            <StockItem 
+              key={stock.symbol} 
+              stock={stock} 
+              onClick={() => onStockClick(stock.symbol)} 
+            />
+          ))
+        )}
       </div>
     </Widget>
   );

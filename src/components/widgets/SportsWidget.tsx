@@ -1,39 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { Widget } from './Widget';
-import { cn } from '@/lib/utils';
-import { Star, CircleDashed, BadgeCheck, CircleDot, Disc } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-
-interface Team {
-  name: string;
-  abbreviation: string;
-  isFavorite: boolean;
-}
-
-interface Game {
-  id: number;
-  homeTeam: Team;
-  awayTeam: Team;
-  homeScore: number;
-  awayScore: number;
-  isLive: boolean;
-  quarter?: string;
-  timeLeft?: string;
-  inning?: string;
-  period?: string;
-  down?: string;
-}
-
-type SportType = 'NBA' | 'NFL' | 'MLB' | 'NHL';
-
-const sportIcons = {
-  NBA: <CircleDashed className="h-4 w-4" />,
-  NFL: <BadgeCheck className="h-4 w-4" />,
-  MLB: <CircleDot className="h-4 w-4" />,
-  NHL: <Disc className="h-4 w-4" />
-};
+import { Game, SportType, sportIcons } from '@/utils/sportsData';
+import { fetchSportsData } from '@/utils/sportsApi';
+import { SportTab } from './sports/SportTab';
 
 export const SportsWidget = () => {
   const [games, setGames] = useState<Game[]>([]);
@@ -42,164 +14,25 @@ export const SportsWidget = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    fetchSportsData(currentSport);
-  }, [currentSport]);
+    const loadSportsData = async () => {
+      setIsLoading(true);
+      try {
+        const data = await fetchSportsData(currentSport);
+        setGames(data);
+      } catch (error) {
+        toast({
+          title: "Sports data error",
+          description: `Could not fetch ${currentSport} data`,
+          variant: "destructive",
+        });
+        setGames([]); // Clear games on error
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const fetchSportsData = async (sport: SportType) => {
-    setIsLoading(true);
-    try {
-      // Using the SportsData.io API for NBA (you would need to sign up for a free API key)
-      // For demo purposes, we'll fetch from a common sports API endpoint
-      // In production, you would use your own API key
-      
-      // Example API call (would need to be adjusted based on your actual API)
-      // const apiUrl = `https://api.sportsdata.io/v3/${sport.toLowerCase()}/scores/json/Games/2023?key=YOUR_API_KEY`;
-      
-      // For now, simulating API call with timeout
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // Using mock data since actual API integration would require API keys
-      const mockResponse = getMockDataForSport(sport);
-      
-      // Sort games to put favorites first
-      const sortedGames = [...mockResponse].sort((a, b) => {
-        if (a.homeTeam.isFavorite && !b.homeTeam.isFavorite) return -1;
-        if (a.awayTeam.isFavorite && !b.awayTeam.isFavorite) return -1;
-        if (!a.homeTeam.isFavorite && !a.awayTeam.isFavorite && 
-            (b.homeTeam.isFavorite || b.awayTeam.isFavorite)) return 1;
-        return 0;
-      });
-      
-      setGames(sortedGames);
-    } catch (error) {
-      console.error(`Error fetching ${currentSport} games:`, error);
-      toast({
-        title: "Sports data error",
-        description: `Could not fetch ${currentSport} data`,
-        variant: "destructive",
-      });
-      setGames([]); // Clear games on error
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // This is a temporary mock data function that would be replaced with actual API calls
-  const getMockDataForSport = (sport: SportType): Game[] => {
-    switch (sport) {
-      case 'NBA':
-        return [
-          { 
-            id: 1, 
-            homeTeam: { name: 'Los Angeles Lakers', abbreviation: 'LAL', isFavorite: true },
-            awayTeam: { name: 'Boston Celtics', abbreviation: 'BOS', isFavorite: false },
-            homeScore: 105, 
-            awayScore: 102, 
-            isLive: true,
-            quarter: 'Q4',
-            timeLeft: '2:45'
-          },
-          { 
-            id: 2, 
-            homeTeam: { name: 'Golden State Warriors', abbreviation: 'GSW', isFavorite: false },
-            awayTeam: { name: 'Miami Heat', abbreviation: 'MIA', isFavorite: false },
-            homeScore: 94, 
-            awayScore: 88, 
-            isLive: false 
-          },
-          { 
-            id: 3, 
-            homeTeam: { name: 'Phoenix Suns', abbreviation: 'PHX', isFavorite: false },
-            awayTeam: { name: 'Dallas Mavericks', abbreviation: 'DAL', isFavorite: false },
-            homeScore: 112, 
-            awayScore: 109, 
-            isLive: false 
-          },
-        ];
-      case 'NFL':
-        return [
-          {
-            id: 1,
-            homeTeam: { name: 'Los Angeles Chargers', abbreviation: 'LAC', isFavorite: true },
-            awayTeam: { name: 'Kansas City Chiefs', abbreviation: 'KC', isFavorite: false },
-            homeScore: 24,
-            awayScore: 27,
-            isLive: true,
-            quarter: 'Q3',
-            timeLeft: '4:15',
-            down: '2nd & 8'
-          },
-          {
-            id: 2,
-            homeTeam: { name: 'San Francisco 49ers', abbreviation: 'SF', isFavorite: false },
-            awayTeam: { name: 'Seattle Seahawks', abbreviation: 'SEA', isFavorite: false },
-            homeScore: 21,
-            awayScore: 14,
-            isLive: false
-          }
-        ];
-      case 'MLB':
-        return [
-          {
-            id: 1,
-            homeTeam: { name: 'San Diego Padres', abbreviation: 'SD', isFavorite: true },
-            awayTeam: { name: 'Los Angeles Dodgers', abbreviation: 'LA', isFavorite: false },
-            homeScore: 3,
-            awayScore: 2,
-            isLive: true,
-            inning: 'TOP 7'
-          },
-          {
-            id: 2,
-            homeTeam: { name: 'New York Yankees', abbreviation: 'NYY', isFavorite: false },
-            awayTeam: { name: 'Boston Red Sox', abbreviation: 'BOS', isFavorite: false },
-            homeScore: 5,
-            awayScore: 4,
-            isLive: false
-          }
-        ];
-      case 'NHL':
-        return [
-          {
-            id: 1,
-            homeTeam: { name: 'San Jose Sharks', abbreviation: 'SJS', isFavorite: true },
-            awayTeam: { name: 'Vegas Golden Knights', abbreviation: 'VGK', isFavorite: false },
-            homeScore: 2,
-            awayScore: 3,
-            isLive: true,
-            period: 'P2',
-            timeLeft: '8:22'
-          },
-          {
-            id: 2,
-            homeTeam: { name: 'Colorado Avalanche', abbreviation: 'COL', isFavorite: false },
-            awayTeam: { name: 'St. Louis Blues', abbreviation: 'STL', isFavorite: false },
-            homeScore: 4,
-            awayScore: 1,
-            isLive: false
-          }
-        ];
-      default:
-        return [];
-    }
-  };
-
-  const getSportProgress = (game: Game) => {
-    if (!game.isLive) return null;
-    
-    switch (currentSport) {
-      case 'NBA':
-        return `${game.quarter} · ${game.timeLeft} left`;
-      case 'NFL':
-        return `${game.quarter} · ${game.timeLeft} · ${game.down}`;
-      case 'MLB':
-        return game.inning;
-      case 'NHL':
-        return `${game.period} · ${game.timeLeft} left`;
-      default:
-        return null;
-    }
-  };
+    loadSportsData();
+  }, [currentSport, toast]);
 
   return (
     <Widget title="Live Scores" isLoading={isLoading}>
@@ -214,54 +47,12 @@ export const SportsWidget = () => {
         </TabsList>
         
         {Object.keys(sportIcons).map((sport) => (
-          <TabsContent key={sport} value={sport} className="mt-0 pt-4">
-            <div className="space-y-3">
-              {currentSport === sport && games.map((game) => (
-                <div 
-                  key={game.id}
-                  className={cn(
-                    "rounded-lg p-3 border border-border/50 transition-colors",
-                    game.isLive ? "bg-primary/5 border-primary/20" : "bg-widget/50",
-                    (game.homeTeam.isFavorite || game.awayTeam.isFavorite) && "border-amber-300/50 bg-amber-50/10"
-                  )}
-                >
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col items-start">
-                      <div className="font-medium flex items-center gap-1">
-                        {game.homeTeam.isFavorite && (
-                          <Star className="h-3 w-3 text-amber-400 fill-amber-400" />
-                        )}
-                        <span>{game.homeTeam.abbreviation}</span>
-                      </div>
-                      <div className="font-medium flex items-center gap-1">
-                        {game.awayTeam.isFavorite && (
-                          <Star className="h-3 w-3 text-amber-400 fill-amber-400" />
-                        )}
-                        <span>{game.awayTeam.abbreviation}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-col items-end">
-                      <div className="font-medium">{game.homeScore}</div>
-                      <div className="font-medium">{game.awayScore}</div>
-                    </div>
-                  </div>
-                  
-                  {game.isLive && (
-                    <div className="mt-2 flex items-center justify-between text-xs">
-                      <div className="flex items-center">
-                        <span className="h-2 w-2 rounded-full bg-red-500 mr-1 animate-pulse"></span>
-                        <span className="text-red-500 font-medium">LIVE</span>
-                      </div>
-                      <div className="text-muted-foreground">
-                        {getSportProgress(game)}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </TabsContent>
+          <SportTab 
+            key={sport}
+            sport={sport as SportType} 
+            games={games} 
+            currentSport={currentSport} 
+          />
         ))}
       </Tabs>
     </Widget>
