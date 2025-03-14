@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Widget } from './Widget';
 import { TrendingDown, TrendingUp, Search, ArrowLeft, Clock } from 'lucide-react';
@@ -40,7 +39,6 @@ interface StockHistoryData {
   month: HistoricalData[];
 }
 
-// Mock data - would be replaced with actual API call
 const mockStocks: StockData[] = [
   { symbol: 'AAPL', price: 178.72, change: 2.35, changePercent: 1.32 },
   { symbol: 'MSFT', price: 396.51, change: -0.68, changePercent: -0.17 },
@@ -48,9 +46,7 @@ const mockStocks: StockData[] = [
   { symbol: 'AMZN', price: 182.81, change: -1.45, changePercent: -0.78 },
 ];
 
-// Mock historical data
 const generateHistoricalData = (symbol: string, basePrice: number): StockHistoryData => {
-  // Generate data for the last 24 hours (24 data points)
   const dayData = Array.from({ length: 24 }, (_, i) => {
     const randomChange = (Math.random() - 0.5) * 2;
     return {
@@ -59,7 +55,6 @@ const generateHistoricalData = (symbol: string, basePrice: number): StockHistory
     };
   });
 
-  // Generate data for the last 5 days (5 data points)
   const weekData = Array.from({ length: 5 }, (_, i) => {
     const randomChange = (Math.random() - 0.5) * 5;
     return {
@@ -68,7 +63,6 @@ const generateHistoricalData = (symbol: string, basePrice: number): StockHistory
     };
   });
 
-  // Generate data for the last month (30 data points)
   const monthData = Array.from({ length: 30 }, (_, i) => {
     const randomChange = (Math.random() - 0.5) * 10;
     return {
@@ -85,7 +79,6 @@ const generateHistoricalData = (symbol: string, basePrice: number): StockHistory
   };
 };
 
-// Generate mock historical data for each stock
 const mockHistoricalData: Record<string, StockHistoryData> = {
   'AAPL': generateHistoricalData('AAPL', 178.72),
   'MSFT': generateHistoricalData('MSFT', 396.51),
@@ -101,11 +94,9 @@ export const StockWidget = () => {
   const [timeFrame, setTimeFrame] = useState<'day' | 'week' | 'month'>('day');
 
   useEffect(() => {
-    // Simulate API call
     const fetchStocks = async () => {
       setIsLoading(true);
       try {
-        // Replace with actual API call in the future
         await new Promise(resolve => setTimeout(resolve, 2000));
         setStocks(mockStocks);
       } catch (error) {
@@ -121,7 +112,6 @@ export const StockWidget = () => {
   const handleAddStock = () => {
     if (!newStockSymbol.trim()) return;
     
-    // Simulate adding a new stock
     const randomPrice = Math.floor(Math.random() * 500) + 50;
     const randomChange = (Math.random() - 0.4) * 10;
     const randomChangePercent = (randomChange / randomPrice) * 100;
@@ -133,10 +123,8 @@ export const StockWidget = () => {
       changePercent: randomChangePercent
     };
     
-    // Generate mock historical data for the new stock
     mockHistoricalData[newStock.symbol] = generateHistoricalData(newStock.symbol, randomPrice);
     
-    // Add to the top of the list and remove the last one if we have more than 4
     const updatedStocks = [newStock, ...stocks];
     if (updatedStocks.length > 4) {
       updatedStocks.pop();
@@ -164,7 +152,6 @@ export const StockWidget = () => {
     return `$${price.toFixed(2)}`;
   };
 
-  // Detail view for selected stock
   if (selectedStock) {
     const stock = stocks.find(s => s.symbol === selectedStock);
     if (!stock) return null;
@@ -246,10 +233,11 @@ export const StockWidget = () => {
                   <Tooltip 
                     content={({ active, payload }) => {
                       if (active && payload && payload.length) {
+                        const value = payload[0].value;
                         return (
                           <div className="bg-background p-2 border border-border rounded-md shadow-md">
                             <p className="text-xs">{`${payload[0].payload.date}`}</p>
-                            <p className="text-xs font-medium">{`Price: $${payload[0].value.toFixed(2)}`}</p>
+                            <p className="text-xs font-medium">{`Price: $${typeof value === 'number' ? value.toFixed(2) : value}`}</p>
                           </div>
                         );
                       }
@@ -272,7 +260,6 @@ export const StockWidget = () => {
     );
   }
 
-  // List view of stocks
   return (
     <Widget title="Market Overview" isLoading={isLoading}>
       <div className="space-y-3">
