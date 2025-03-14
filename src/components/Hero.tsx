@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Container } from './Layout';
-import { ArrowDown, Code } from 'lucide-react';
+import { ArrowDown, Code, Github, Linkedin } from 'lucide-react';
 
 export const Hero = () => {
   return (
@@ -31,12 +31,19 @@ export const Hero = () => {
             Currently, I'm focused on creating accessible, human-centered products.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Button size="lg" className="rounded-md">
-              View Portfolio
-            </Button>
-            <Button size="lg" variant="outline" className="rounded-md" id="contact-button">
+            <Button size="lg" className="rounded-md" id="contact-button">
               Contact Me
             </Button>
+            <div className="flex gap-2">
+              <Button size="lg" variant="outline" className="rounded-md flex items-center gap-2">
+                <Linkedin className="h-5 w-5" />
+                <span className="hidden sm:inline">LinkedIn</span>
+              </Button>
+              <Button size="lg" variant="outline" className="rounded-md flex items-center gap-2">
+                <Github className="h-5 w-5" />
+                <span className="hidden sm:inline">GitHub</span>
+              </Button>
+            </div>
           </div>
         </div>
       </Container>
