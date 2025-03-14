@@ -22,8 +22,8 @@ export const Hero = () => {
       </div>
 
       <Container>
-        <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-          {/* Left column: Intro content */}
+        <div className="flex flex-col md:flex-row items-start gap-8 md:gap-16">
+          {/* Main content column */}
           <div className="w-full md:w-2/3 animate-fade-in">
             <div className="inline-block mb-6 px-3 py-1 rounded-md border border-primary/20 bg-primary/5 text-primary text-sm font-medium">
               <div className="flex items-center gap-1.5">
@@ -109,9 +109,9 @@ export const Hero = () => {
             </div>
           </div>
 
-          {/* Right column: Profile image */}
-          <div className="w-full md:w-1/3 flex justify-center md:justify-end">
-            <div className="relative transform transition-all duration-300 hover:scale-105">
+          {/* Profile image column - now properly aligned with content */}
+          <div className="w-full md:w-1/3 flex justify-center md:justify-end self-center">
+            <div className="relative transform transition-all duration-300 hover:scale-105 mt-6 md:mt-0">
               <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden border-4 border-primary/20 shadow-xl">
                 <img
                   src="/lovable-uploads/d0591870-cc31-4b6d-be04-7e285801a66b.png"
