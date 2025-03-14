@@ -16,9 +16,16 @@ export const ClockWidget = () => {
     };
   }, []);
   
-  const hours = time.getHours();
-  const minutes = time.getMinutes();
-  const seconds = time.getSeconds();
+  // Convert to Pacific Time
+  const pacificTime = new Date(time.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
+  
+  const hours = pacificTime.getHours();
+  const minutes = pacificTime.getMinutes();
+  const seconds = pacificTime.getSeconds();
+  
+  // Format hours for 12-hour clock
+  const hours12 = hours % 12 || 12;
+  const amPm = hours >= 12 ? 'PM' : 'AM';
   
   const formatTime = (value: number) => value.toString().padStart(2, '0');
   
@@ -26,12 +33,14 @@ export const ClockWidget = () => {
     <Widget title="Clock" className="md:row-span-1">
       <div className="flex flex-col items-center justify-center h-full py-4">
         <div className="text-4xl font-light tracking-tight mb-2">
-          {formatTime(hours)}:
+          {formatTime(hours12)}:
           <span>{formatTime(minutes)}</span>
           <span className="text-muted-foreground">:{formatTime(seconds)}</span>
+          <span className="text-sm ml-2">{amPm}</span>
+          <span className="text-xs ml-2 text-muted-foreground">PST</span>
         </div>
         <div className="text-sm text-muted-foreground">
-          {time.toLocaleDateString(undefined, { 
+          {pacificTime.toLocaleDateString(undefined, { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
