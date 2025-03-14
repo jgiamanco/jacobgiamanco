@@ -16,23 +16,43 @@ export const Hero = () => {
       </div>
       
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          {/* Left column: Intro content - takes up more space */}
-          <div className="lg:col-span-8 animate-fade-in">
+        <div className="flex flex-col-reverse md:flex-row items-center gap-8">
+          {/* Left column: Intro content */}
+          <div className="w-full md:w-2/3 animate-fade-in">
             <div className="inline-block mb-6 px-3 py-1 rounded-md border border-primary/20 bg-primary/5 text-primary text-sm font-medium">
               <div className="flex items-center gap-1.5">
                 <Code className="h-3.5 w-3.5" />
                 <span>Frontend Developer & Product Manager</span>
               </div>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-6">
-              Crafting beautiful digital <span className="text-primary">experiences</span>
-            </h1>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl leading-relaxed">
-              Valued expert with 5+ years of experience driving significant improvements in technical product management, 
-              frontend engineering, and software design. Adept at prioritizing clear communication 
-              and strong cross-team collaboration.
-            </p>
+            
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-6 mb-6">
+              {/* Profile image - shown on all screen sizes, positioned differently on mobile vs desktop */}
+              <div className="md:hidden relative mb-4">
+                <div className="w-40 h-40 rounded-2xl overflow-hidden border-4 border-primary/20 shadow-xl">
+                  <img 
+                    src="/lovable-uploads/d0591870-cc31-4b6d-be04-7e285801a66b.png" 
+                    alt="Jacob Giamanco" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="absolute -bottom-3 -right-3 bg-primary text-white px-2 py-1 rounded-lg shadow-md text-xs">
+                  <span className="font-medium">5+ Years Experience</span>
+                </div>
+              </div>
+              
+              <div>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-6">
+                  Crafting beautiful digital <span className="text-primary">experiences</span>
+                </h1>
+                <p className="text-lg text-muted-foreground mb-8 max-w-2xl leading-relaxed">
+                  Valued expert with 5+ years of experience driving significant improvements in technical product management, 
+                  frontend engineering, and software design. Adept at prioritizing clear communication 
+                  and strong cross-team collaboration.
+                </p>
+              </div>
+            </div>
+            
             <div className="flex flex-wrap gap-4 mb-10">
               <Button size="lg" className="rounded-md" id="contact-button">
                 Contact Me
@@ -81,9 +101,9 @@ export const Hero = () => {
             </div>
           </div>
           
-          {/* Right column: Profile image - smaller and to the right of the headline */}
-          <div className="lg:col-span-4 flex justify-center">
-            <div className="relative">
+          {/* Right column: Profile image - only visible on md screens and up */}
+          <div className="hidden md:block w-full md:w-1/3">
+            <div className="relative flex justify-center md:justify-end">
               <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden border-4 border-primary/20 shadow-xl">
                 <img 
                   src="/lovable-uploads/d0591870-cc31-4b6d-be04-7e285801a66b.png" 
