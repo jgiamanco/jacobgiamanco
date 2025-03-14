@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Widget } from './Widget';
 import { cn } from '@/lib/utils';
-import { MessageSquare, Users, Hash, Radio } from 'lucide-react';
+import { MessageSquare, Users, Hash, Radio, Bot, BotMessageSquare, MessageCircleCode } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface DiscordMember {
@@ -11,6 +11,7 @@ interface DiscordMember {
   avatar: string;
   status: string;
   avatar_url: string;
+  isBot?: boolean;
 }
 
 interface DiscordServer {
@@ -26,8 +27,8 @@ export const DiscordWidget = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   
-  // Discord server ID - replace with your server ID if needed
-  const serverId = '1094020686399356938'; // Example Discord server ID
+  // Discord server ID with your bot - replace with your actual server ID
+  const serverId = '1094020686399356938'; 
 
   useEffect(() => {
     const fetchDiscordData = async () => {
@@ -49,7 +50,7 @@ export const DiscordWidget = () => {
           variant: "destructive",
         });
         
-        // Fallback to mock data
+        // Fallback to mock data with bot
         setServer({
           id: "123456789",
           name: "Jacob's Coding Community",
@@ -83,6 +84,14 @@ export const DiscordWidget = () => {
               avatar: "default",
               status: "dnd",
               avatar_url: "https://cdn.discordapp.com/embed/avatars/3.png"
+            },
+            {
+              id: "5",
+              username: "DevAssistant",
+              avatar: "default",
+              status: "online",
+              avatar_url: "https://cdn.discordapp.com/embed/avatars/4.png",
+              isBot: true
             }
           ]
         });
@@ -119,6 +128,12 @@ export const DiscordWidget = () => {
     }
   };
 
+  const botCommands = [
+    { command: "/help", description: "Show available commands" },
+    { command: "/code", description: "Generate code snippets" },
+    { command: "/explain", description: "Explain a concept" }
+  ];
+
   return (
     <Widget 
       title="Discord Community" 
@@ -141,7 +156,7 @@ export const DiscordWidget = () => {
             </div>
             <div>
               <h3 className="font-medium">{server.name}</h3>
-              <p className="text-sm text-muted-foreground">Connect with developers and share ideas</p>
+              <p className="text-sm text-muted-foreground">Connect with developers and chat with our bot</p>
             </div>
           </div>
           
@@ -152,7 +167,7 @@ export const DiscordWidget = () => {
                 <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Online Members</h4>
               </div>
               
-              <div className="space-y-2 overflow-y-auto max-h-[180px] pr-2">
+              <div className="space-y-2 overflow-y-auto max-h-[120px] pr-2">
                 {server.members.map((member) => (
                   <div key={member.id} className="flex items-center space-x-2 p-2 rounded-lg hover:bg-secondary/50 transition-colors">
                     <div className="relative flex-shrink-0">
@@ -162,9 +177,19 @@ export const DiscordWidget = () => {
                         className="w-8 h-8 rounded-full"
                       />
                       <div className={cn("absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-widget", getStatusColor(member.status))} />
+                      {member.isBot && (
+                        <div className="absolute -top-1 -right-1 bg-indigo-500 rounded-full p-0.5">
+                          <Bot className="h-2.5 w-2.5 text-white" />
+                        </div>
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{member.username}</p>
+                      <div className="flex items-center">
+                        <p className="text-sm font-medium truncate">{member.username}</p>
+                        {member.isBot && (
+                          <span className="ml-1.5 text-xs bg-indigo-500/10 text-indigo-500 px-1.5 py-0.5 rounded-sm font-medium">BOT</span>
+                        )}
+                      </div>
                       <p className="text-xs text-muted-foreground capitalize">{member.status}</p>
                     </div>
                   </div>
@@ -188,13 +213,29 @@ export const DiscordWidget = () => {
                   <span className="text-sm">react-help</span>
                 </div>
                 <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-secondary/30 transition-colors">
-                  <Hash className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">portfolio-showcase</span>
+                  <MessageCircleCode className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm">bot-commands</span>
+                  <span className="ml-auto text-xs bg-indigo-500/10 text-indigo-500 px-1.5 py-0.5 rounded-sm font-medium">BOT</span>
                 </div>
                 <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-secondary/30 transition-colors">
                   <Radio className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">coding-lounge</span>
                 </div>
+              </div>
+            </div>
+            
+            <div className="mt-4 bg-secondary/20 p-3 rounded-lg border border-border/40">
+              <div className="flex items-center space-x-2 mb-2">
+                <BotMessageSquare className="h-4 w-4 text-indigo-500" />
+                <h4 className="text-sm font-medium text-foreground">Bot Commands</h4>
+              </div>
+              <div className="space-y-1.5">
+                {botCommands.map((cmd, index) => (
+                  <div key={index} className="flex items-center text-xs">
+                    <code className="bg-secondary px-1.5 py-0.5 rounded font-mono text-indigo-500">{cmd.command}</code>
+                    <span className="ml-2 text-muted-foreground">{cmd.description}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -203,7 +244,7 @@ export const DiscordWidget = () => {
             onClick={handleJoinServer}
             className="mt-4 w-full py-2 px-4 bg-indigo-500 hover:bg-indigo-600 text-white rounded-md font-medium transition-colors"
           >
-            Join Server
+            Join Server & Chat with Bot
           </button>
         </div>
       )}
