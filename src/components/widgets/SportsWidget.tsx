@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Widget } from './Widget';
 import { cn } from '@/lib/utils';
-import { Star, Basketball, Football, Baseball, HockeyPuck } from 'lucide-react';
+import { Star, CircleDashed, BadgeCheck, CircleDot, Disc } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Team {
@@ -120,10 +120,10 @@ const mockGames: Record<SportType, Game[]> = {
 };
 
 const sportIcons = {
-  NBA: <Basketball className="h-4 w-4" />,
-  NFL: <Football className="h-4 w-4" />,
-  MLB: <Baseball className="h-4 w-4" />,
-  NHL: <HockeyPuck className="h-4 w-4" />
+  NBA: <CircleDashed className="h-4 w-4" />,
+  NFL: <BadgeCheck className="h-4 w-4" />,
+  MLB: <CircleDot className="h-4 w-4" />,
+  NHL: <Disc className="h-4 w-4" />
 };
 
 export const SportsWidget = () => {
