@@ -63,8 +63,8 @@ export const ChatWidget = () => {
 
   return (
     <Widget title="AI Assistant" className="h-full">
-      <div className="flex flex-col h-[250px]">
-        <div className="flex-1 overflow-y-auto space-y-3 p-2 scrollbar-thin">
+      <div className="flex flex-col h-[280px] md:h-[320px]">
+        <div className="flex-1 overflow-y-auto space-y-3 p-2 md:p-3 scrollbar-thin">
           {messages.map((message) => (
             <div 
               key={message.id}
@@ -80,7 +80,7 @@ export const ChatWidget = () => {
               )}
               <div 
                 className={cn(
-                  "p-2.5 rounded-lg text-xs leading-relaxed",
+                  "p-2.5 rounded-lg text-xs md:text-sm leading-relaxed",
                   message.isBot 
                     ? "bg-secondary text-secondary-foreground" 
                     : "bg-primary text-primary-foreground"
@@ -117,7 +117,7 @@ export const ChatWidget = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about John's experience..."
-              className="flex-1 text-xs"
+              className="flex-1 text-xs md:text-sm"
             />
             <Button type="submit" size="icon" disabled={isLoading} className="h-8 w-8">
               <Send className="h-3.5 w-3.5" />

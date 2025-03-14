@@ -19,13 +19,15 @@ export const WidgetsSection = () => {
           <ClockWidget />
           <ResumeWidget />
           
-          {/* Middle row - DiscordWidget taking 2 columns */}
+          {/* Full width AI Assistant */}
+          <div className="md:col-span-3">
+            <ChatWidget />
+          </div>
+          
+          {/* Last row - widgets */}
           <DiscordWidget />
           <SportsWidget />
-          
-          {/* Last row - StockWidget and ChatWidget */}
           <StockWidget />
-          <ChatWidget />
         </div>
       </Container>
     </section>
