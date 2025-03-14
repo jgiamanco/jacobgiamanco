@@ -14,12 +14,17 @@ export const WidgetsSection = () => {
     <section id="widgets" className="py-6 pt-16 md:pt-20">
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* First row - 3 small widgets */}
           <WeatherWidget />
           <ClockWidget />
-          <SportsWidget />
           <ResumeWidget />
-          <StockWidget />
+          
+          {/* Middle row - ChatWidget taking 2 columns */}
           <ChatWidget />
+          <SportsWidget />
+          
+          {/* Last row - StockWidget and DiscordWidget */}
+          <StockWidget />
           <DiscordWidget />
         </div>
       </Container>
