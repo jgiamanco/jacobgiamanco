@@ -1,6 +1,8 @@
+
 import * as React from "react"
 
-const MOBILE_BREAKPOINT = 768
+// Updated breakpoints for more precise responsive design
+const MOBILE_BREAKPOINT = 900 // Changed from 768px to 900px as requested
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
@@ -16,4 +18,21 @@ export function useIsMobile() {
   }, [])
 
   return !!isMobile
+}
+
+// Add a new hook for large screens (>1440px)
+export function useIsLargeScreen() {
+  const [isLargeScreen, setIsLargeScreen] = React.useState<boolean | undefined>(undefined)
+  
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(min-width: 1441px)`)
+    const onChange = () => {
+      setIsLargeScreen(window.innerWidth >= 1441)
+    }
+    mql.addEventListener("change", onChange)
+    setIsLargeScreen(window.innerWidth >= 1441)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+
+  return !!isLargeScreen
 }
