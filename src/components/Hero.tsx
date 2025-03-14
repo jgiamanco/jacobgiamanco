@@ -20,15 +20,15 @@ export const Hero = () => {
           <div className="inline-block mb-6 px-3 py-1 rounded-md border border-primary/20 bg-primary/5 text-primary text-sm font-medium">
             <div className="flex items-center gap-1.5">
               <Code className="h-3.5 w-3.5" />
-              <span>Frontend Developer</span>
+              <span>Frontend Developer & Product Manager</span>
             </div>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-6">
             Crafting beautiful digital <span className="text-primary">experiences</span>
           </h1>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl leading-relaxed">
-            I'm a frontend developer specializing in building exceptional digital experiences. 
-            Currently, I'm focused on creating accessible, human-centered products.
+            I'm a frontend developer and product manager specializing in building exceptional digital experiences. 
+            Currently, I'm focused on creating accessible, human-centered products that drive customer engagement.
           </p>
           <div className="flex flex-wrap gap-4">
             <Button size="lg" className="rounded-md" id="contact-button">
@@ -53,7 +53,7 @@ export const Hero = () => {
       </Container>
       
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-hover-bounce">
-        <a href="#skills" className="flex flex-col items-center text-muted-foreground hover:text-primary transition-colors">
+        <a href="#about" className="flex flex-col items-center text-muted-foreground hover:text-primary transition-colors">
           <span className="text-sm mb-2">Scroll Down</span>
           <ArrowDown className="h-5 w-5" />
         </a>
