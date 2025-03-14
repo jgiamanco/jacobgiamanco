@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Container } from './Layout';
 import { Button } from '@/components/ui/button';
@@ -37,16 +38,10 @@ export const Header = () => {
     >
       <Container>
         <div className="flex items-center justify-between">
-          <div className="font-medium text-lg tracking-tight">
+          <a href="/" className="font-medium text-lg tracking-tight cursor-pointer">
             <span className="text-primary font-semibold">Jacob</span> Giamanco
-          </div>
+          </a>
           <nav className="hidden md:flex items-center space-x-8">
-            <button 
-              onClick={() => scrollToSection('about')}
-              className="text-sm hover:text-primary transition-colors"
-            >
-              About
-            </button>
             <button 
               onClick={() => scrollToSection('skills')}
               className="text-sm hover:text-primary transition-colors"
