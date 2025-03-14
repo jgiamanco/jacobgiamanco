@@ -20,7 +20,7 @@ export const SkillsWidget = () => {
   const skills: Skill[] = [
     { 
       name: 'React', 
-      iconClass: 'devicon-react-original', 
+      iconClass: 'devicon-react-plain', 
       color: 'bg-blue-500',
       description: 'Component-based UI development' 
     },
@@ -50,7 +50,7 @@ export const SkillsWidget = () => {
     },
     { 
       name: 'Next.js', 
-      iconClass: 'devicon-nextjs-original', 
+      iconClass: 'devicon-nextjs-plain', 
       color: isDark ? 'bg-gray-800' : 'bg-black',
       description: 'React framework for production' 
     },
@@ -62,7 +62,7 @@ export const SkillsWidget = () => {
     },
     { 
       name: 'Express', 
-      iconClass: 'devicon-express-original', 
+      iconClass: 'devicon-express-plain', 
       color: 'bg-gray-600',
       description: 'Web application framework for Node.js' 
     },
