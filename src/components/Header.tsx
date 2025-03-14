@@ -21,9 +21,10 @@ export const Header = () => {
     const section = document.getElementById(sectionId);
     if (section) {
       const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+      const offset = sectionId === 'skills' ? headerHeight : headerHeight;
       const sectionTop = section.getBoundingClientRect().top + window.pageYOffset;
       window.scrollTo({
-        top: sectionTop - headerHeight,
+        top: sectionTop - offset,
         behavior: 'smooth'
       });
     }
