@@ -17,7 +17,7 @@ import { useWidgetContext } from '@/contexts/WidgetContext';
 import { Button } from '@/components/ui/button';
 import { RotateCcw } from 'lucide-react';
 import GridLayout from 'react-grid-layout';
-import { useMediaQuery } from '@/hooks/use-mobile';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 const Index = () => {
   const [contactModalOpen, setContactModalOpen] = useState(false);
