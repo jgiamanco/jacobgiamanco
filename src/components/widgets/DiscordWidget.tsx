@@ -5,10 +5,12 @@ import {
   MessageSquare,
   Users,
   Hash,
-  Radio,
   Bot,
   BotMessageSquare,
-  MessageCircleCode,
+  GamepadIcon,
+  StarIcon,
+  Settings2,
+  Brain,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -29,12 +31,155 @@ interface DiscordServer {
   members: DiscordMember[];
 }
 
+interface BotCommand {
+  command: string;
+  description: string;
+  category: "general" | "admin" | "fun" | "game" | "stars";
+  adminOnly?: boolean;
+}
+
+const botCommands: BotCommand[] = [
+  // General Commands
+  {
+    command: "/help",
+    description: "Displays all available commands",
+    category: "general",
+  },
+  {
+    command: "/Mithrandir <ai_prompt>",
+    description: "Asks Mithrandir to respond to a query",
+    category: "general",
+  },
+  {
+    command: "/google <search_query>",
+    description: "Searches Google for a specific term",
+    category: "general",
+  },
+  {
+    command: "/urban <term>",
+    description: "Retrieves Urban Dictionary definition",
+    category: "general",
+  },
+  {
+    command: "/youtube <search_query>",
+    description: "Retrieve a YouTube video",
+    category: "general",
+  },
+  {
+    command: "/hello",
+    description: "Says hello to the user",
+    category: "general",
+  },
+  {
+    command: "/serverinfo",
+    description: "Displays server information",
+    category: "general",
+  },
+  {
+    command: "/userinfo <member>",
+    description: "Displays user information",
+    category: "general",
+  },
+  {
+    command: "/list",
+    description: "Lists all saved triggers",
+    category: "general",
+  },
+
+  // Admin Commands
+  {
+    command: "/set_admin_role <role>",
+    description: "Sets the admin role",
+    category: "admin",
+    adminOnly: true,
+  },
+  {
+    command: "/setwelcome <message>",
+    description: "Sets custom welcome message",
+    category: "admin",
+    adminOnly: true,
+  },
+  {
+    command: "/trigger <word> <response>",
+    description: "Sets word trigger response",
+    category: "admin",
+    adminOnly: true,
+  },
+  {
+    command: "/erase <word>",
+    description: "Erases a trigger response",
+    category: "admin",
+    adminOnly: true,
+  },
+
+  // Fun Commands
+  {
+    command: "/repeat <message>",
+    description: "Repeats your message",
+    category: "fun",
+  },
+  { command: "/add <a> <b>", description: "Adds two numbers", category: "fun" },
+  {
+    command: "/subtract <a> <b>",
+    description: "Subtracts numbers",
+    category: "fun",
+  },
+  {
+    command: "/multiply <a> <b>",
+    description: "Multiplies numbers",
+    category: "fun",
+  },
+  {
+    command: "/divide <a> <b>",
+    description: "Divides numbers",
+    category: "fun",
+  },
+
+  // Game Commands
+  {
+    command: "/lotr_game",
+    description: "LOTR quote guessing game",
+    category: "game",
+  },
+  { command: "/trivia", description: "Play a trivia game", category: "game" },
+  {
+    command: "/rps <choice>",
+    description: "Play rock, paper, scissors",
+    category: "game",
+  },
+  { command: "/guess", description: "Number guessing game", category: "game" },
+  {
+    command: "/scramble",
+    description: "Word unscramble game",
+    category: "game",
+  },
+
+  // Stars System
+  {
+    command: "/checkstars",
+    description: "Check user's stars",
+    category: "stars",
+  },
+  {
+    command: "/addstars <user> <stars>",
+    description: "Add stars to user",
+    category: "stars",
+    adminOnly: true,
+  },
+  {
+    command: "/leaderboard",
+    description: "Stars leaderboard",
+    category: "stars",
+  },
+];
+
 export const DiscordWidget = () => {
   const [server, setServer] = useState<DiscordServer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] =
+    useState<BotCommand["category"]>("general");
   const { toast } = useToast();
 
-  // Discord server ID with your bot - replace with your actual server ID
   const serverId = "609488074413572155";
 
   useEffect(() => {
@@ -67,45 +212,6 @@ export const DiscordWidget = () => {
               ? error.message
               : "Could not fetch Discord server data",
           variant: "destructive",
-        });
-
-        // Fallback to mock data with bot
-        setServer({
-          id: "609488074413572155",
-          name: "Jacob's Bot server",
-          instant_invite: "https://discord.gg/yfdGXNvyBk",
-          presence_count: 2,
-          members: [
-            {
-              id: "1",
-              username: "jacob_dev",
-              avatar: "default",
-              status: "online",
-              avatar_url: "https://cdn.discordapp.com/embed/avatars/0.png",
-            },
-            {
-              id: "2",
-              username: "react_enthusiast",
-              avatar: "default",
-              status: "idle",
-              avatar_url: "https://cdn.discordapp.com/embed/avatars/1.png",
-            },
-            {
-              id: "3",
-              username: "typescript_guru",
-              avatar: "default",
-              status: "online",
-              avatar_url: "https://cdn.discordapp.com/embed/avatars/2.png",
-            },
-            {
-              id: "5",
-              username: "DevAssistant",
-              avatar: "default",
-              status: "online",
-              avatar_url: "https://cdn.discordapp.com/embed/avatars/4.png",
-              isBot: true,
-            },
-          ],
         });
       } finally {
         setIsLoading(false);
@@ -144,17 +250,28 @@ export const DiscordWidget = () => {
     }
   };
 
-  const botCommands = [
-    { command: "/help", description: "Show available commands" },
-    { command: "/code", description: "Generate code snippets" },
-    { command: "/explain", description: "Explain a concept" },
-  ];
+  const getCategoryIcon = (category: BotCommand["category"]) => {
+    switch (category) {
+      case "general":
+        return <MessageSquare className="h-4 w-4" />;
+      case "admin":
+        return <Settings2 className="h-4 w-4" />;
+      case "fun":
+        return <Brain className="h-4 w-4" />;
+      case "game":
+        return <GamepadIcon className="h-4 w-4" />;
+      case "stars":
+        return <StarIcon className="h-4 w-4" />;
+      default:
+        return <BotMessageSquare className="h-4 w-4" />;
+    }
+  };
 
   return (
     <Widget
       title="Discord Community"
       isLoading={isLoading}
-      className="md:col-span-2 md:row-span-2"
+      className="md:col-span-2 md:row-span-2 h-full"
       headerContent={
         server && (
           <div className="flex items-center space-x-1">
@@ -168,20 +285,20 @@ export const DiscordWidget = () => {
     >
       {server && (
         <div className="flex flex-col h-full">
-          <div className="flex items-center space-x-3 mb-4 pb-3 border-b border-border/50">
-            <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center">
-              <Hash className="h-6 w-6 text-indigo-500" />
+          <div className="flex items-center space-x-3 pb-3 border-b border-border/50">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+              <Hash className="h-6 w-6 text-primary" />
             </div>
             <div>
               <h3 className="font-medium">{server.name}</h3>
               <p className="text-sm text-muted-foreground">
-                Connect with developers and chat with our bot
+                Connect with developers and chat with Mithrandir
               </p>
             </div>
           </div>
 
-          <div className="flex-1 overflow-hidden">
-            <div className="mb-4">
+          <div className="flex-1 overflow-hidden flex flex-col min-h-0">
+            <div className="mb-4 flex-shrink-0">
               <div className="flex items-center space-x-2 mb-2">
                 <Users className="h-4 w-4 text-muted-foreground" />
                 <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
@@ -208,8 +325,8 @@ export const DiscordWidget = () => {
                         )}
                       />
                       {member.isBot && (
-                        <div className="absolute -top-1 -right-1 bg-indigo-500 rounded-full p-0.5">
-                          <Bot className="h-2.5 w-2.5 text-white" />
+                        <div className="absolute -top-1 -right-1 bg-primary rounded-full p-0.5">
+                          <Bot className="h-2.5 w-2.5 text-primary-foreground" />
                         </div>
                       )}
                     </div>
@@ -219,7 +336,7 @@ export const DiscordWidget = () => {
                           {member.username}
                         </p>
                         {member.isBot && (
-                          <span className="ml-1.5 text-xs bg-indigo-500/10 text-indigo-500 px-1.5 py-0.5 rounded-sm font-medium">
+                          <span className="ml-1.5 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-sm font-medium">
                             BOT
                           </span>
                         )}
@@ -233,64 +350,66 @@ export const DiscordWidget = () => {
               </div>
             </div>
 
-            <div className="mt-4">
+            <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
               <div className="flex items-center space-x-2 mb-2">
-                <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                  Channels
-                </h4>
-              </div>
-
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2 p-2 rounded-lg bg-secondary/30">
-                  <Hash className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">general</span>
-                </div>
-                <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-secondary/30 transition-colors">
-                  <Hash className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">react-help</span>
-                </div>
-                <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-secondary/30 transition-colors">
-                  <MessageCircleCode className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">bot-commands</span>
-                  <span className="ml-auto text-xs bg-indigo-500/10 text-indigo-500 px-1.5 py-0.5 rounded-sm font-medium">
-                    BOT
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-secondary/30 transition-colors">
-                  <Radio className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">coding-lounge</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 bg-secondary/20 p-3 rounded-lg border border-border/40">
-              <div className="flex items-center space-x-2 mb-2">
-                <BotMessageSquare className="h-4 w-4 text-indigo-500" />
+                <BotMessageSquare className="h-4 w-4 text-primary" />
                 <h4 className="text-sm font-medium text-foreground">
-                  Bot Commands
+                  Mithrandir Commands
                 </h4>
               </div>
-              <div className="space-y-1.5">
-                {botCommands.map((cmd, index) => (
-                  <div key={index} className="flex items-center text-xs">
-                    <code className="bg-secondary px-1.5 py-0.5 rounded font-mono text-indigo-500">
-                      {cmd.command}
-                    </code>
-                    <span className="ml-2 text-muted-foreground">
-                      {cmd.description}
-                    </span>
-                  </div>
-                ))}
+
+              <div className="flex space-x-2 mb-3 overflow-x-auto pb-2 flex-shrink-0">
+                {["general", "admin", "fun", "game", "stars"].map(
+                  (category) => (
+                    <button
+                      key={category}
+                      onClick={() =>
+                        setSelectedCategory(category as BotCommand["category"])
+                      }
+                      className={cn(
+                        "flex items-center space-x-1 px-2.5 py-1.5 rounded-md text-xs font-medium whitespace-nowrap",
+                        selectedCategory === category
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                      )}
+                    >
+                      {getCategoryIcon(category as BotCommand["category"])}
+                      <span className="capitalize">{category}</span>
+                    </button>
+                  )
+                )}
+              </div>
+
+              <div className="flex-1 overflow-y-auto min-h-0 space-y-1.5 pr-2">
+                {botCommands
+                  .filter((cmd) => cmd.category === selectedCategory)
+                  .map((cmd, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start text-xs p-2 rounded-lg hover:bg-secondary/30"
+                    >
+                      <code className="bg-secondary px-1.5 py-0.5 rounded font-mono text-primary whitespace-nowrap">
+                        {cmd.command}
+                      </code>
+                      <span className="ml-2 text-muted-foreground">
+                        {cmd.description}
+                        {cmd.adminOnly && (
+                          <span className="ml-1 text-xs text-destructive">
+                            (Admin)
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  ))}
               </div>
             </div>
           </div>
 
           <button
             onClick={handleJoinServer}
-            className="mt-4 w-full py-2 px-4 bg-indigo-500 hover:bg-indigo-600 text-white rounded-md font-medium transition-colors"
+            className="mt-4 w-full py-2 px-4 bg-primary text-primary-foreground hover:bg-primary/90 rounded-md font-medium transition-colors flex-shrink-0"
           >
-            Join Server & Chat with Bot
+            Join Server & Chat with Mithrandir
           </button>
         </div>
       )}
