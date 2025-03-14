@@ -10,20 +10,19 @@ import { ResumeWidget } from '@/components/widgets/ResumeWidget';
 import { StockWidget } from '@/components/widgets/StockWidget';
 import { ChatWidget } from '@/components/widgets/ChatWidget';
 import { SportsWidget } from '@/components/widgets/SportsWidget';
+import { DiscordWidget } from '@/components/widgets/DiscordWidget';
 import { Toaster } from '@/components/ui/toaster';
 
 const Index = () => {
   const [contactModalOpen, setContactModalOpen] = useState(false);
   
   useEffect(() => {
-    // Set up event listeners for contact buttons
     const contactButtons = document.querySelectorAll('#contact-button, #header-contact-button');
     contactButtons.forEach(button => {
       button.addEventListener('click', () => setContactModalOpen(true));
     });
     
     return () => {
-      // Clean up event listeners
       contactButtons.forEach(button => {
         button.removeEventListener('click', () => setContactModalOpen(true));
       });
@@ -66,6 +65,7 @@ const Index = () => {
             <ResumeWidget />
             <StockWidget />
             <ChatWidget />
+            <DiscordWidget />
           </div>
         </Container>
       </section>
