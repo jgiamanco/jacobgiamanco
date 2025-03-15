@@ -28,8 +28,6 @@ const getCurrentDateFormatted = () => {
   return `${year}-${month}-${day}`;
 };
 
-const isDev = import.meta.env.DEV;
-
 export const SportsWidget: React.FC<SportsWidgetProps> = ({
   sport = "mlb",
   defaultSport = "mlb",
@@ -180,8 +178,6 @@ export const SportsWidget: React.FC<SportsWidgetProps> = ({
   const handleNextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev < games.length - 1 ? prev + 1 : 0));
   }, [games.length]);
-
-  const currentGame = useMemo(() => games[currentIndex], [games, currentIndex]);
 
   const formatPeriod = (game: Game, sport: SportType) => {
     const status = game.Status.toLowerCase();
