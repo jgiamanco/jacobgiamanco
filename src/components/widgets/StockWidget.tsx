@@ -7,7 +7,7 @@ import { ErrorBoundary } from "../ErrorBoundary";
 import { useToast } from "@/hooks/use-toast";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { devError } from "@/utils/logger";
+import { logger } from "@/utils/logger";
 
 export const StockWidget: React.FC = () => {
   const [stocks, setStocks] = useState<StockData[]>([]);
@@ -28,28 +28,28 @@ export const StockWidget: React.FC = () => {
       const cachedData = cache.get<StockData>(cacheKey, CACHE_DURATION.STOCKS);
 
       if (cachedData) {
-        devError(`Using cached data for ${upperSymbol}:`, cachedData);
+        logger.error(`Using cached data for ${upperSymbol}:`, cachedData);
         return cachedData;
       }
 
       const url = `${API_ENDPOINTS.STOCKS.BASE}/quote?symbol=${upperSymbol}&token=${API_KEYS.FINNHUB}`;
-      devError(`Fetching stock data from URL:`, url);
+      logger.error(`Fetching stock data from URL:`, url);
 
       const response = await fetch(url);
-      devError(`Response status for ${upperSymbol}:`, response.status);
+      logger.error(`Response status for ${upperSymbol}:`, response.status);
 
       if (!response.ok) {
         const errorText = await response.text();
-        devError(`Error response for ${upperSymbol}:`, errorText);
+        logger.error(`Error response for ${upperSymbol}:`, errorText);
         throw new Error(`Failed to fetch stock data for ${upperSymbol}`);
       }
 
       const data = await response.json();
-      devError(`Raw API response for ${upperSymbol}:`, data);
+      logger.error(`Raw API response for ${upperSymbol}:`, data);
 
       // Check for valid US stock data
       if (!data || typeof data.c === "undefined" || data.c === 0) {
-        devError(`Invalid or non-US stock data for ${upperSymbol}:`, data);
+        logger.error(`Invalid or non-US stock data for ${upperSymbol}:`, data);
         throw new Error(`Invalid or non-US stock data for ${upperSymbol}`);
       }
 
@@ -65,7 +65,7 @@ export const StockWidget: React.FC = () => {
       cache.set(cacheKey, stockData, CACHE_DURATION.STOCKS);
       return stockData;
     } catch (error) {
-      devError(`Error fetching stock data for ${upperSymbol}:`, error);
+      logger.error(`Error fetching stock data for ${upperSymbol}:`, error);
       throw error;
     }
   }, []);

@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Send, Bot, User } from "lucide-react";
 import { sendMessage } from "@/utils/openaiApi";
-import { devError } from "@/utils/logger";
+import { logger } from "@/utils/logger";
 import ReactMarkdown from "react-markdown";
 
 interface Message {
@@ -54,7 +54,7 @@ export const ChatWidget = () => {
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      devError("Error getting AI response:", error);
+      logger.error("Error getting AI response:", error);
       const errorMessage: Message = {
         id: messages.length + 2,
         text: "I apologize, but I encountered an error. Please try again later.",

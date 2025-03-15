@@ -13,6 +13,7 @@ import {
 import { cache } from "@/utils/cache";
 import { ErrorBoundary } from "../ErrorBoundary";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { logger } from "@/utils/logger";
 
 interface SportsWidgetProps {
   sport?: SportType;
@@ -28,18 +29,6 @@ const getCurrentDateFormatted = () => {
 };
 
 const isDev = import.meta.env.DEV;
-
-const devLog = (...args: unknown[]) => {
-  if (isDev) {
-    console.log(...args);
-  }
-};
-
-const devError = (...args: unknown[]) => {
-  if (isDev) {
-    console.error(...args);
-  }
-};
 
 export const SportsWidget: React.FC<SportsWidgetProps> = ({
   sport = "mlb",
@@ -146,7 +135,7 @@ export const SportsWidget: React.FC<SportsWidgetProps> = ({
 
       if (!response.ok) {
         const errorText = await response.text();
-        devError(`${selectedSport.toUpperCase()} API Error:`, {
+        logger.error(`${selectedSport.toUpperCase()} API Error:`, {
           status: response.status,
           statusText: response.statusText,
           errorText,
@@ -165,7 +154,7 @@ export const SportsWidget: React.FC<SportsWidgetProps> = ({
       const processedGames = gamesData.map(processGameData);
       setGames(processedGames);
     } catch (error) {
-      devError("Error fetching games:", error);
+      logger.error("Error fetching games:", error);
       toast({
         title: "Error",
         description: "Failed to fetch sports data. Please try again later.",

@@ -1,4 +1,4 @@
-import { devError } from "./logger";
+import { logger } from "./logger";
 
 const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 const ASSISTANT_ID = "asst_H6bV1Mn6VCb2OuplombtzW58";
@@ -40,7 +40,7 @@ export const sendMessage = async (message: string): Promise<string> => {
 
     if (!threadResponse.ok) {
       const errorData = await threadResponse.json().catch(() => ({}));
-      devError("Thread creation failed:", {
+      logger.error("Thread creation failed:", {
         status: threadResponse.status,
         statusText: threadResponse.statusText,
         error: errorData,
@@ -52,7 +52,7 @@ export const sendMessage = async (message: string): Promise<string> => {
     }
 
     const thread = await threadResponse.json();
-    devError("Thread created successfully:", thread);
+    logger.error("Thread created successfully:", thread);
 
     // Add the user's message to the thread
     const messageResponse = await fetch(
@@ -73,7 +73,7 @@ export const sendMessage = async (message: string): Promise<string> => {
 
     if (!messageResponse.ok) {
       const errorData = await messageResponse.json().catch(() => ({}));
-      devError("Message creation failed:", {
+      logger.error("Message creation failed:", {
         status: messageResponse.status,
         statusText: messageResponse.statusText,
         error: errorData,
@@ -83,7 +83,7 @@ export const sendMessage = async (message: string): Promise<string> => {
     }
 
     const messageData = await messageResponse.json();
-    devError("Message added successfully:", messageData);
+    logger.error("Message added successfully:", messageData);
 
     // Run the assistant
     const runResponse = await fetch(
@@ -105,7 +105,7 @@ export const sendMessage = async (message: string): Promise<string> => {
 
     if (!runResponse.ok) {
       const errorData = await runResponse.json().catch(() => ({}));
-      devError("Run creation failed:", {
+      logger.error("Run creation failed:", {
         status: runResponse.status,
         statusText: runResponse.statusText,
         error: errorData,
@@ -121,7 +121,7 @@ export const sendMessage = async (message: string): Promise<string> => {
     }
 
     const run = await runResponse.json();
-    devError("Run created successfully:", run);
+    logger.error("Run created successfully:", run);
 
     // Poll for run completion
     let runStatus = run.status;
@@ -138,7 +138,7 @@ export const sendMessage = async (message: string): Promise<string> => {
       );
       const statusData = await statusResponse.json();
       runStatus = statusData.status;
-      devError("Run status:", runStatus);
+      logger.error("Run status:", runStatus);
     }
 
     if (runStatus !== "completed") {
@@ -158,7 +158,7 @@ export const sendMessage = async (message: string): Promise<string> => {
 
     if (!messagesResponse.ok) {
       const errorData = await messagesResponse.json().catch(() => ({}));
-      devError("Message retrieval failed:", {
+      logger.error("Message retrieval failed:", {
         status: messagesResponse.status,
         statusText: messagesResponse.statusText,
         error: errorData,
@@ -178,7 +178,7 @@ export const sendMessage = async (message: string): Promise<string> => {
 
     return parseResponse(assistantMessage.content[0].text.value);
   } catch (error) {
-    devError("Error sending message to OpenAI:", error);
+    logger.error("Error sending message to OpenAI:", error);
     return "I apologize, but I'm having trouble connecting to the AI service right now. Please try again later.";
   }
 };

@@ -1,5 +1,4 @@
-import { useToast } from "@/hooks/use-toast";
-import { devLog, devError, devWarn } from "./logger";
+import { logger } from "./logger";
 
 export interface StockData {
   symbol: string;
@@ -37,7 +36,7 @@ const getCachedData = <T>(key: string): T | null => {
       const { data, timestamp }: CachedData<T> = JSON.parse(cached);
       const now = Date.now();
       if (now - timestamp <= CACHE_EXPIRY) {
-        devLog(`Using cached data for ${key}`);
+        logger.log(`Using cached data for ${key}`);
         return data;
       }
       // Remove expired cache
@@ -45,7 +44,7 @@ const getCachedData = <T>(key: string): T | null => {
     }
     return null;
   } catch (error) {
-    devError("Error reading from cache:", error);
+    logger.error("Error reading from cache:", error);
     return null;
   }
 };
@@ -58,7 +57,7 @@ const setCachedData = <T>(key: string, data: T): void => {
     };
     localStorage.setItem(key, JSON.stringify(cacheData));
   } catch (error) {
-    devError("Error writing to cache:", error);
+    logger.error("Error writing to cache:", error);
   }
 };
 
@@ -91,17 +90,17 @@ export const fetchStockData = async (
     const cacheKey = `stock_${symbol}`;
     const cachedData = getCachedData<StockData>(cacheKey);
     if (cachedData) {
-      devLog(`Using cached data for ${symbol}`);
+      logger.log(`Using cached data for ${symbol}`);
       return cachedData;
     }
 
     const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${API_KEY}`;
-    devLog(`Fetching stock data for ${symbol}`);
+    logger.log(`Fetching stock data for ${symbol}`);
 
     const response = await fetch(url);
     const data: FinnhubQuote = await response.json();
 
-    devLog(`Response for ${symbol}:`, data);
+    logger.log(`Response for ${symbol}:`, data);
 
     if (data.c) {
       const stockData: StockData = {
@@ -116,11 +115,11 @@ export const fetchStockData = async (
       setCachedData(cacheKey, stockData);
       return stockData;
     } else {
-      devWarn(`No quote data found for ${symbol}`, data);
+      logger.log(`No quote data found for ${symbol}`, data);
       return null;
     }
   } catch (error) {
-    devError(`Error fetching stock data for ${symbol}:`, error);
+    logger.error(`Error fetching stock data for ${symbol}:`, error);
     return null;
   }
 };
@@ -133,7 +132,7 @@ export const fetchHistoricalData = async (
     const cacheKey = `history_${symbol}`;
     const cachedData = getCachedData<StockHistoryData>(cacheKey);
     if (cachedData) {
-      devLog(`Using cached historical data for ${symbol}`);
+      logger.log(`Using cached historical data for ${symbol}`);
       return cachedData;
     }
 
@@ -143,7 +142,7 @@ export const fetchHistoricalData = async (
     const oneWeekAgo = now - 7 * 24 * 60 * 60;
     const oneMonthAgo = now - 30 * 24 * 60 * 60;
 
-    devLog(
+    logger.log(
       `Fetching historical data for ${symbol} from ${new Date(
         oneDayAgo * 1000
       ).toISOString()} to ${new Date(now * 1000).toISOString()}`
@@ -212,7 +211,7 @@ export const fetchHistoricalData = async (
     setCachedData(cacheKey, historyData);
     return historyData;
   } catch (error) {
-    devError(`Error fetching historical data for ${symbol}:`, error);
+    logger.error(`Error fetching historical data for ${symbol}:`, error);
     // Return empty data structure if API fails
     return {
       symbol,
