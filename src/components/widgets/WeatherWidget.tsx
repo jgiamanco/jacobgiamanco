@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Widget } from "./Widget";
 import {
   Cloud,
@@ -29,6 +29,21 @@ interface WeatherData {
   windSpeed: number;
 }
 
+const makeSecureRequest = async (locationQuery: string, API_KEY: string) => {
+  const url = new URL("https://api.openweathermap.org/data/2.5/weather");
+  url.search = new URLSearchParams({
+    q: locationQuery,
+    units: "imperial",
+    appid: API_KEY,
+  }).toString();
+
+  // Using no-referrer policy to prevent API key leaks
+  return fetch(url, {
+    method: "GET",
+    referrerPolicy: "no-referrer",
+  });
+};
+
 export const WeatherWidget = () => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,6 +53,83 @@ export const WeatherWidget = () => {
 
   // Using environment variable for API key
   const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
+
+  const fetchWeather = useCallback(
+    async (locationQuery: string) => {
+      setIsLoading(true);
+      try {
+        // First try the exact query
+        let response = await makeSecureRequest(locationQuery, API_KEY);
+
+        // If that fails, try different formats
+        if (!response.ok) {
+          const parts = locationQuery.split(",").map((part) => part.trim());
+
+          // Try different combinations of the location parts
+          const queries = [
+            locationQuery,
+            parts.slice(0, 2).join(","),
+            parts[0],
+          ];
+
+          for (const query of queries) {
+            response = await makeSecureRequest(query, API_KEY);
+            if (response.ok) break;
+          }
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(
+              `Location "${locationQuery}" not found. Please try a different location.`
+            );
+          }
+        }
+
+        const data = await response.json();
+        // Update location context with coordinates and timezone
+        setLocation({
+          lat: data.coord.lat,
+          lon: data.coord.lon,
+          name: data.name,
+          timezone: data.timezone, // timezone offset in seconds
+        });
+
+        setWeather({
+          temperature: data.main.temp,
+          condition: data.weather[0].main.toLowerCase(),
+          location: `${data.name}, ${data.sys.country}`,
+          feelsLike: data.main.feels_like,
+          humidity: data.main.humidity,
+          description: data.weather[0].description,
+          windSpeed: data.wind.speed,
+        });
+      } catch (error) {
+        logger.error("Error fetching weather:", error);
+        toast({
+          title: "Weather data error",
+          description:
+            error instanceof Error
+              ? error.message
+              : "Could not fetch weather data for this location",
+          variant: "destructive",
+        });
+
+        // Fallback to default data on error
+        setWeather({
+          temperature: 72,
+          condition: "sunny",
+          location: locationQuery,
+          feelsLike: 74,
+          humidity: 45,
+          description: "Sunny",
+          windSpeed: 5,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [API_KEY, toast, setLocation]
+  );
 
   useEffect(() => {
     if (!API_KEY) {
@@ -50,90 +142,7 @@ export const WeatherWidget = () => {
       return;
     }
     fetchWeather(location.name);
-  }, [location.name, API_KEY, toast]);
-
-  const fetchWeather = async (locationQuery: string) => {
-    setIsLoading(true);
-    try {
-      // First try the exact query
-      let response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
-          locationQuery
-        )}&units=imperial&appid=${API_KEY}`
-      );
-
-      // If that fails, try different formats
-      if (!response.ok) {
-        const parts = locationQuery.split(",").map((part) => part.trim());
-
-        // Try different combinations of the location parts
-        const queries = [
-          locationQuery, // Full query (e.g., "San Diego, CA, US")
-          parts.slice(0, 2).join(","), // City, State/Country (e.g., "San Diego, CA")
-          parts[0], // Just city (e.g., "San Diego")
-        ];
-
-        for (const query of queries) {
-          response = await fetch(
-            `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
-              query
-            )}&units=imperial&appid=${API_KEY}`
-          );
-
-          if (response.ok) break;
-        }
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(
-            `Location "${locationQuery}" not found. Please try a different location.`
-          );
-        }
-      }
-
-      const data = await response.json();
-      // Update location context with coordinates and timezone
-      setLocation({
-        lat: data.coord.lat,
-        lon: data.coord.lon,
-        name: data.name,
-        timezone: data.timezone, // timezone offset in seconds
-      });
-
-      setWeather({
-        temperature: data.main.temp,
-        condition: data.weather[0].main.toLowerCase(),
-        location: `${data.name}, ${data.sys.country}`,
-        feelsLike: data.main.feels_like,
-        humidity: data.main.humidity,
-        description: data.weather[0].description,
-        windSpeed: data.wind.speed,
-      });
-    } catch (error) {
-      logger.error("Error fetching weather:", error);
-      toast({
-        title: "Weather data error",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Could not fetch weather data for this location",
-        variant: "destructive",
-      });
-
-      // Fallback to default data on error
-      setWeather({
-        temperature: 72,
-        condition: "sunny",
-        location: locationQuery,
-        feelsLike: 74,
-        humidity: 45,
-        description: "Sunny",
-        windSpeed: 5,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [location.name, API_KEY, toast, fetchWeather]);
 
   const handleLocationSubmit = (e: React.FormEvent) => {
     e.preventDefault();
