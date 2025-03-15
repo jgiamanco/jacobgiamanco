@@ -13,6 +13,7 @@ import {
   Brain,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { logger } from "@/utils/logger";
 
 interface DiscordMember {
   id: string;
@@ -204,7 +205,7 @@ export const DiscordWidget = () => {
         const data = await response.json();
         setServer(data);
       } catch (error) {
-        console.error("Error fetching Discord data:", error);
+        logger.error("Error fetching Discord data:", error);
         toast({
           title: "Discord widget error",
           description:

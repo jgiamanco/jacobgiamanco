@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "@/contexts/LocationContext";
+import { logger } from "@/utils/logger";
 
 interface WeatherData {
   temperature: number;
@@ -91,8 +92,6 @@ export const WeatherWidget = () => {
       }
 
       const data = await response.json();
-      console.log("Weather data received for:", data.name); // Debug log
-
       // Update location context with coordinates and timezone
       setLocation({
         lat: data.coord.lat,
@@ -111,7 +110,7 @@ export const WeatherWidget = () => {
         windSpeed: data.wind.speed,
       });
     } catch (error) {
-      console.error("Error fetching weather:", error);
+      logger.error("Error fetching weather:", error);
       toast({
         title: "Weather data error",
         description:
