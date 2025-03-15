@@ -54,35 +54,45 @@ export const WeatherWidget = () => {
   // Using environment variable for API key
   const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
+  const formatLocationQuery = (query: string): string => {
+    const parts = query
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean);
+
+    // If we have 2 or 3 parts and the second part is a US state code
+    if (parts.length >= 2 && parts[1].length === 2) {
+      const [city, state] = parts;
+      // Add US as country code if not provided
+      const country = parts[2] || "US";
+      return `${city},${state},${country}`;
+    }
+
+    // For international cities or single city names
+    const city = parts[0];
+    const country = parts[parts.length - 1];
+
+    // If country code is provided (assumed to be the last part)
+    if (parts.length > 1 && country.length === 2) {
+      return `${city},${country}`;
+    }
+
+    // If only city is provided
+    return city;
+  };
+
   const fetchWeather = useCallback(
     async (locationQuery: string) => {
       setIsLoading(true);
       try {
-        // First try the exact query
-        let response = await makeSecureRequest(locationQuery, API_KEY);
+        const formattedQuery = formatLocationQuery(locationQuery);
+        const response = await makeSecureRequest(formattedQuery, API_KEY);
 
-        // If that fails, try different formats
         if (!response.ok) {
-          const parts = locationQuery.split(",").map((part) => part.trim());
-
-          // Try different combinations of the location parts
-          const queries = [
-            locationQuery,
-            parts.slice(0, 2).join(","),
-            parts[0],
-          ];
-
-          for (const query of queries) {
-            response = await makeSecureRequest(query, API_KEY);
-            if (response.ok) break;
-          }
-
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(
-              `Location "${locationQuery}" not found. Please try a different location.`
-            );
-          }
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(
+            `Location "${locationQuery}" not found. Please try a different location.`
+          );
         }
 
         const data = await response.json();
@@ -91,7 +101,7 @@ export const WeatherWidget = () => {
           lat: data.coord.lat,
           lon: data.coord.lon,
           name: data.name,
-          timezone: data.timezone, // timezone offset in seconds
+          timezone: data.timezone,
         });
 
         setWeather({
