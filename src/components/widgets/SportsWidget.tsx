@@ -307,6 +307,11 @@ export const SportsWidget: React.FC<SportsWidgetProps> = ({
     return () => clearInterval(interval);
   }, [selectedSport]);
 
+  // Reset to first slide when sport changes
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [selectedSport]);
+
   const formatPeriod = (game: Game, sport: SportType) => {
     const status = game.Status.toLowerCase();
     if (status !== "inprogress" && status !== "in progress") {
