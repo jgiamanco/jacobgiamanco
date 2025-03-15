@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Widget } from "./Widget";
 import {
   Cloud,
@@ -42,78 +42,19 @@ export const WeatherWidget = () => {
   // Using environment variable for API key
   const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
-  useEffect(() => {
-    // Debug log to check if API key is loaded
-    console.log("Environment check:", {
-      apiKeyExists: !!API_KEY,
-      apiKeyValue: API_KEY ? `${API_KEY.substring(0, 4)}...` : "not found",
-      allEnvVars: import.meta.env,
-      mode: import.meta.env.MODE,
-      isDev: import.meta.env.DEV,
-    });
+  const fetchWeatherData = useCallback(async () => {
+    if (!location) return;
 
-    if (!API_KEY) {
-      toast({
-        title: "Configuration Error",
-        description:
-          "OpenWeather API key is not configured. Please ensure your .env file exists and contains VITE_OPENWEATHER_API_KEY.",
-        variant: "destructive",
-      });
-      return;
-    }
-    fetchWeather(location.name);
-  }, [location.name, API_KEY, toast]);
-
-  const fetchWeather = async (locationQuery: string) => {
-    setIsLoading(true);
     try {
-      // First try the exact query
-      let response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
-          locationQuery
-        )}&units=imperial&appid=${API_KEY}`
+      const response = await fetch(
+        `${API_ENDPOINTS.WEATHER}?lat=${location.lat}&lon=${location.lon}&appid=${API_KEY}&units=imperial`
       );
 
-      // If that fails, try different formats
       if (!response.ok) {
-        const parts = locationQuery.split(",").map((part) => part.trim());
-
-        // Try different combinations of the location parts
-        const queries = [
-          locationQuery, // Full query (e.g., "San Diego, CA, US")
-          parts.slice(0, 2).join(","), // City, State/Country (e.g., "San Diego, CA")
-          parts[0], // Just city (e.g., "San Diego")
-        ];
-
-        for (const query of queries) {
-          response = await fetch(
-            `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
-              query
-            )}&units=imperial&appid=${API_KEY}`
-          );
-
-          if (response.ok) break;
-        }
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(
-            `Location "${locationQuery}" not found. Please try a different location.`
-          );
-        }
+        throw new Error(`Weather API Error: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log("Weather data received:", data); // Debug log
-
-      // Update location context with coordinates and timezone
-      setLocation({
-        lat: data.coord.lat,
-        lon: data.coord.lon,
-        name: data.name,
-        timezone: data.timezone, // timezone offset in seconds
-      });
-
       setWeather({
         temperature: data.main.temp,
         condition: data.weather[0].main.toLowerCase(),
@@ -124,35 +65,23 @@ export const WeatherWidget = () => {
         windSpeed: data.wind.speed,
       });
     } catch (error) {
-      console.error("Error fetching weather:", error);
+      console.error("Error fetching weather data:", error);
       toast({
-        title: "Weather data error",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Could not fetch weather data for this location",
+        title: "Error",
+        description: "Failed to fetch weather data. Please try again later.",
         variant: "destructive",
       });
-
-      // Fallback to default data on error
-      setWeather({
-        temperature: 72,
-        condition: "sunny",
-        location: locationQuery,
-        feelsLike: 74,
-        humidity: 45,
-        description: "Sunny",
-        windSpeed: 5,
-      });
-    } finally {
-      setIsLoading(false);
     }
-  };
+  }, [location, toast]);
+
+  useEffect(() => {
+    fetchWeatherData();
+  }, [fetchWeatherData]);
 
   const handleLocationSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputLocation.trim()) {
-      fetchWeather(inputLocation.trim());
+      fetchWeatherData();
       setInputLocation("");
     }
   };
