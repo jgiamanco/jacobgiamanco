@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Widget } from "./Widget";
 import {
   Cloud,
@@ -7,7 +7,6 @@ import {
   Sun,
   Loader2,
   Thermometer,
-  CloudDrizzle,
   CloudFog,
   CloudLightning,
   Wind,
@@ -16,8 +15,6 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/components/ThemeProvider";
-import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "@/contexts/LocationContext";
 
@@ -35,26 +32,75 @@ export const WeatherWidget = () => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [inputLocation, setInputLocation] = useState("");
-  const { theme } = useTheme();
   const { toast } = useToast();
   const { location, setLocation } = useLocation();
 
   // Using environment variable for API key
   const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
-  const fetchWeatherData = useCallback(async () => {
-    if (!location) return;
+  useEffect(() => {
+    if (!API_KEY) {
+      toast({
+        title: "Configuration Error",
+        description:
+          "OpenWeather API key is not configured. Please ensure your .env file exists",
+        variant: "destructive",
+      });
+      return;
+    }
+    fetchWeather(location.name);
+  }, [location.name, API_KEY, toast]);
 
+  const fetchWeather = async (locationQuery: string) => {
+    setIsLoading(true);
     try {
-      const response = await fetch(
-        `${API_ENDPOINTS.WEATHER}?lat=${location.lat}&lon=${location.lon}&appid=${API_KEY}&units=imperial`
+      // First try the exact query
+      let response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
+          locationQuery
+        )}&units=imperial&appid=${API_KEY}`
       );
 
+      // If that fails, try different formats
       if (!response.ok) {
-        throw new Error(`Weather API Error: ${response.status}`);
+        const parts = locationQuery.split(",").map((part) => part.trim());
+
+        // Try different combinations of the location parts
+        const queries = [
+          locationQuery, // Full query (e.g., "San Diego, CA, US")
+          parts.slice(0, 2).join(","), // City, State/Country (e.g., "San Diego, CA")
+          parts[0], // Just city (e.g., "San Diego")
+        ];
+
+        for (const query of queries) {
+          response = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
+              query
+            )}&units=imperial&appid=${API_KEY}`
+          );
+
+          if (response.ok) break;
+        }
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(
+            `Location "${locationQuery}" not found. Please try a different location.`
+          );
+        }
       }
 
       const data = await response.json();
+      console.log("Weather data received for:", data.name); // Debug log
+
+      // Update location context with coordinates and timezone
+      setLocation({
+        lat: data.coord.lat,
+        lon: data.coord.lon,
+        name: data.name,
+        timezone: data.timezone, // timezone offset in seconds
+      });
+
       setWeather({
         temperature: data.main.temp,
         condition: data.weather[0].main.toLowerCase(),
@@ -65,23 +111,35 @@ export const WeatherWidget = () => {
         windSpeed: data.wind.speed,
       });
     } catch (error) {
-      console.error("Error fetching weather data:", error);
+      console.error("Error fetching weather:", error);
       toast({
-        title: "Error",
-        description: "Failed to fetch weather data. Please try again later.",
+        title: "Weather data error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Could not fetch weather data for this location",
         variant: "destructive",
       });
-    }
-  }, [location, toast]);
 
-  useEffect(() => {
-    fetchWeatherData();
-  }, [fetchWeatherData]);
+      // Fallback to default data on error
+      setWeather({
+        temperature: 72,
+        condition: "sunny",
+        location: locationQuery,
+        feelsLike: 74,
+        humidity: 45,
+        description: "Sunny",
+        windSpeed: 5,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleLocationSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputLocation.trim()) {
-      fetchWeatherData();
+      fetchWeather(inputLocation.trim());
       setInputLocation("");
     }
   };
