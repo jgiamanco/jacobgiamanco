@@ -14,9 +14,6 @@ export const StockWidget: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  // Get API key from environment variable
-  const API_KEY = import.meta.env.VITE_FINNHUB_API_KEY;
-
   const fetchStockData = useCallback(async (symbol: string) => {
     const upperSymbol = symbol.toUpperCase().trim();
     try {
@@ -35,8 +32,7 @@ export const StockWidget: React.FC = () => {
         return cachedData;
       }
 
-      // Use API_KEY directly from env instead of from API_KEYS
-      const url = `${API_ENDPOINTS.STOCKS.BASE}/quote?symbol=${upperSymbol}&token=${API_KEY}`;
+      const url = `${API_ENDPOINTS.STOCKS.BASE}/quote?symbol=${upperSymbol}&token=${API_KEYS.FINNHUB}`;
       logger.error(`Fetching stock data from URL:`, url);
 
       const response = await fetch(url);
@@ -72,7 +68,7 @@ export const StockWidget: React.FC = () => {
       logger.error(`Error fetching stock data for ${upperSymbol}:`, error);
       throw error;
     }
-  }, [API_KEY]);  // Include API_KEY in dependency array
+  }, []);
 
   const fetchStocks = useCallback(async () => {
     setIsLoading(true);
