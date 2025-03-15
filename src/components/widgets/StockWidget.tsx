@@ -74,7 +74,7 @@ export const StockWidget: React.FC = () => {
     setIsLoading(true);
     try {
       // Popular US tech stocks
-      const symbols = ["AAPL", "MSFT", "PYPL", "TSLA"];
+      const symbols = ["AAPL", "MSFT", "PYPL"];
       const stockData = await Promise.all(
         symbols.map((symbol) => fetchStockData(symbol))
       );
@@ -101,7 +101,7 @@ export const StockWidget: React.FC = () => {
       try {
         const stockData = await fetchStockData(newSymbol);
         setStocks((prev) => {
-          const newStocks = [stockData, ...prev.slice(0, 3)]; // Keep only 4 items
+          const newStocks = [stockData, ...prev.slice(0, 2)]; // Keep only 4 items
           return newStocks;
         });
         toast({
