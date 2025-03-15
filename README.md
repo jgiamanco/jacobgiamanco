@@ -1,69 +1,146 @@
-# Welcome to your Lovable project
+# Jacob Giamanco's Portfolio Website
 
-## Project info
+A modern, responsive portfolio website built with cutting-edge web technologies, showcasing professional experience, technical skills, and real-time data integration. Features an AI-powered assistant trained on my professional background for interactive engagement.
 
-**URL**: https://lovable.dev/projects/5a87529e-885c-4891-a43e-0371974b8c57
+## 🚀 Tech Stack
 
-## How can I edit this code?
+### Frontend Framework & Core Technologies
 
-There are several ways of editing your application.
+- **Next.js 14** - React framework with server-side rendering and app router
+- **TypeScript** - For type-safe code and enhanced developer experience
+- **Tailwind CSS** - Utility-first CSS framework with custom configurations
+- **Shadcn/ui** - Beautifully designed components built with Radix UI and Tailwind
+- **Lucide Icons** - Modern icon set for consistent and scalable vector icons
 
-**Use Lovable**
+### AI Integration & Interaction
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/5a87529e-885c-4891-a43e-0371974b8c57) and start prompting.
+- **OpenAI Assistant API** - Custom-trained AI assistant for personalized interactions
+- **Natural Language Processing** - Intelligent response handling and context awareness
+- **Custom Training Data** - AI model trained on professional background and expertise
+- **Real-time Conversation** - Dynamic chat interface with contextual responses
 
-Changes made via Lovable will be committed automatically to this repo.
+### State Management & Data Fetching
 
-**Use your preferred IDE**
+- **React Hooks** - Custom hooks for responsive design and state management
+- **SWR** - For data fetching, caching, and real-time updates
+- **React Context** - For global state management
+- **Custom Cache System** - Optimized data caching for API responses
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### APIs & External Services
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **OpenAI API** - Advanced language model integration for intelligent interactions
+- **Finnhub API** - Real-time stock market data integration
+- **Sports Data API** - Live sports scores and game statistics
+- **Open Weather API** - Current weather conditions and forecasts
+- **Discord Widget API** - A look at my very own Discord.py bot using the Discord Widget API
 
-Follow these steps:
+### Performance & Optimization
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- **Dynamic Imports** - Code splitting for optimal load times
+- **Image Optimization** - Next.js Image component with automatic optimization
+- **Debouncing** - Smart API call handling for better performance
+- **Incremental Static Regeneration** - For optimal content updates
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### UI/UX Features
 
-# Step 3: Install the necessary dependencies.
-npm i
+- **Dark/Light Mode** - System-based and user-preferred theme switching
+- **Responsive Design** - Mobile-first approach with tailored layouts
+- **Smooth Animations** - Using Tailwind's animation utilities
+- **Interactive Widgets** - Real-time data display with user interactions
+- **Accessibility** - ARIA labels and keyboard navigation support
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### Development Tools
+
+- **ESLint** - Code quality and consistency
+- **Prettier** - Code formatting
+- **Husky** - Git hooks for pre-commit checks
+- **TypeScript Path Aliases** - Clean import statements
+- **Development Logging** - Conditional logging system for debugging
+
+## 🌟 Key Features
+
+### AI-Powered Interaction
+
+- **Personal AI Assistant** - Trained to answer questions about my experience and skills
+- **Context-Aware Responses** - Intelligent handling of multi-turn conversations
+- **Professional Background Knowledge** - Deep understanding of my work history and projects
+- **Real-time Learning** - Continuous improvement through conversation analytics
+
+### Dynamic Widgets
+
+- **Stock Tracker** - Real-time stock prices with favorite stock highlighting
+- **Sports Dashboard** - Live scores across multiple sports leagues
+- **Weather Display** - Current conditions and forecasts
+- **Discord Activity** - A look at my very own Discord.py bot using the Discord Widget API
+
+### Professional Showcase
+
+- **Experience Timeline** - Interactive display of professional journey
+- **Skill Grid** - Visual representation of technical expertise
+- **Project Portfolio** - Showcase of significant work and contributions
+- **Contact Integration** - Professional networking and contact options
+
+### Performance Optimizations
+
+- Intelligent caching system for API responses
+- Debounced search implementations
+- Optimized asset loading and delivery
+- Responsive image handling
+
+## 🛠️ Setup and Development
+
+```bash
+# Clone the repository
+git clone https://github.com/jgiamanco/portfolio.git
+
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
-**Edit a file directly in GitHub**
+## 📱 Responsive Design
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+The website is fully responsive across all devices:
 
-**Use GitHub Codespaces**
+- Mobile-first approach
+- Tablet-optimized layouts
+- Desktop-enhanced features
+- Large screen optimizations
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🔒 Security
 
-## What technologies are used for this project?
+- Environment variable protection
+- API key security
+- Rate limiting implementation
+- Data validation and sanitization
 
-This project is built with .
+## 🤝 Contributing
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+While this is a personal portfolio website, suggestions and feedback are welcome:
 
-## How can I deploy this project?
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
 
-Simply open [Lovable](https://lovable.dev/projects/5a87529e-885c-4891-a43e-0371974b8c57) and click on Share -> Publish.
+## 📄 License
 
-## I want to use a custom domain - is that possible?
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+## 🙏 Acknowledgments
+
+- [Shadcn/ui](https://ui.shadcn.com/) for the component library
+- [Tailwind CSS](https://tailwindcss.com/) for the styling system
+- [Vercel](https://vercel.com/) for hosting and deployment
+- Various API providers for real-time data integration
+
+---
+
+Built with �� by Jacob Giamanco
