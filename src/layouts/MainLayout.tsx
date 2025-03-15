@@ -1,9 +1,7 @@
-
-import React, { ReactNode } from 'react';
-import { Layout } from '@/components/Layout';
-import { Header } from '@/components/Header';
-import { Container } from '@/components/Layout';
-import { Toaster } from '@/components/ui/toaster';
+import React, { ReactNode } from "react";
+import { Layout } from "@/components/Layout";
+import { Header } from "@/components/Header";
+import { Toaster } from "@/components/ui/toaster";
 
 interface MainLayoutProps {
   children: ReactNode;

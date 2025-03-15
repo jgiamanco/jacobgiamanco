@@ -208,7 +208,7 @@ export const Hero = () => {
         </div>
       </Container>
 
-      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 animate-hover-bounce hidden md:flex flex-col items-center">
+      <div className="absolute bottom-4 sm:bottom-6 -translate-x-1/2 animate-hover-bounce hidden md:flex flex-col items-center">
         <a
           href="#skills"
           className="flex flex-col items-center text-muted-foreground hover:text-primary transition-colors"
