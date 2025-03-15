@@ -71,7 +71,7 @@ export const Hero = () => {
               <Button
                 size={isMobile ? "default" : "lg"}
                 className={`rounded-md ${
-                  isLargeScreen ? "text-lg px-6 py-6 h-auto" : ""
+                  isLargeScreen ? "text-lg h-auto" : ""
                 }`}
                 id="contact-button"
               >

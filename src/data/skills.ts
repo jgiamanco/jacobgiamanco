@@ -1,5 +1,4 @@
-
-import { useTheme } from '@/components/ThemeProvider';
+import { useTheme } from "@/components/ThemeProvider";
 
 export interface Skill {
   name: string;
@@ -10,64 +9,64 @@ export interface Skill {
 
 export const useSkills = () => {
   const { theme } = useTheme();
-  const isDark = theme === 'dark';
-  
+  const isDark = theme === "dark";
+
   const skills: Skill[] = [
-    { 
-      name: 'React', 
-      iconClass: 'devicon-react-plain', 
-      color: 'bg-blue-500',
-      description: 'Component-based UI development' 
+    {
+      name: "React",
+      iconClass: "devicon-react-original-wordmark",
+      color: "bg-primary",
+      description: "Component-based UI development",
     },
-    { 
-      name: 'TypeScript', 
-      iconClass: 'devicon-typescript-plain', 
-      color: 'bg-blue-600',
-      description: 'Static typing for JavaScript' 
+    {
+      name: "TypeScript",
+      iconClass: "devicon-typescript-plain",
+      color: "bg-primary",
+      description: "Static typing for JavaScript",
     },
-    { 
-      name: 'JavaScript', 
-      iconClass: 'devicon-javascript-plain', 
-      color: 'bg-yellow-400',
-      description: 'Dynamic web programming' 
+    {
+      name: "JavaScript",
+      iconClass: "devicon-javascript-plain",
+      color: "bg-primary",
+      description: "Dynamic web programming",
     },
-    { 
-      name: 'Python', 
-      iconClass: 'devicon-python-plain', 
-      color: 'bg-green-500',
-      description: 'Versatile programming language' 
+    {
+      name: "Python",
+      iconClass: "devicon-python-plain",
+      color: "bg-primary",
+      description: "Versatile programming language",
     },
-    { 
-      name: 'Node.js', 
-      iconClass: 'devicon-nodejs-plain', 
-      color: 'bg-green-600',
-      description: 'JavaScript runtime environment' 
+    {
+      name: "Node.js",
+      iconClass: "devicon-nodejs-plain-wordmark",
+      color: "bg-primary",
+      description: "JavaScript runtime environment",
     },
-    { 
-      name: 'Next.js', 
-      iconClass: 'devicon-nextjs-plain', 
-      color: isDark ? 'bg-gray-800' : 'bg-black',
-      description: 'React framework for production' 
+    {
+      name: "Next.js",
+      iconClass: "devicon-nextjs-plain",
+      color: "bg-primary",
+      description: "React framework for production",
     },
-    { 
-      name: 'SQL', 
-      iconClass: 'devicon-mysql-plain', 
-      color: 'bg-blue-400',
-      description: 'Database query language' 
+    {
+      name: "SQL",
+      iconClass: "devicon-azuresqldatabase-plain",
+      color: "bg-primary",
+      description: "Database query language",
     },
-    { 
-      name: 'Express', 
-      iconClass: 'devicon-express-plain', 
-      color: 'bg-gray-600',
-      description: 'Web application framework for Node.js' 
+    {
+      name: "Express",
+      iconClass: "devicon-express-original",
+      color: "bg-primary",
+      description: "Web application framework for Node.js",
     },
-    { 
-      name: 'Django', 
-      iconClass: 'devicon-django-plain', 
-      color: 'bg-green-700',
-      description: 'Python web framework' 
+    {
+      name: "Django",
+      iconClass: "devicon-django-plain",
+      color: "bg-primary",
+      description: "Python web framework",
     },
   ];
 
-  return { skills, iconColor: isDark ? '#f5f5f5' : '#2e2e2e' };
+  return { skills, iconColor: "#f5f5f5" };
 };
