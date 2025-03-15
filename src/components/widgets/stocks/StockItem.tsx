@@ -1,36 +1,40 @@
-
-import React from 'react';
-import { cn } from '@/lib/utils';
-import { TrendingDown, TrendingUp } from 'lucide-react';
-import { StockData } from '@/utils/stockApi';
+import React from "react";
+import { cn } from "@/lib/utils";
+import { TrendingDown, TrendingUp } from "lucide-react";
+import { StockData } from "@/types";
 
 interface StockItemProps {
   stock: StockData;
-  onClick: () => void;
 }
 
-export const StockItem: React.FC<StockItemProps> = ({ stock, onClick }) => {
+export const StockItem: React.FC<StockItemProps> = ({ stock }) => {
+  if (!stock.symbol) {
+    return null; // Don't render if there's no symbol
+  }
+
+  const isPositive = stock.change >= 0;
+
   return (
-    <div 
-      className="flex items-center justify-between p-2 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer"
-      onClick={onClick}
-    >
-      <div className="font-medium">{stock.symbol}</div>
-      <div className="text-right">
-        <div>${stock.price.toFixed(2)}</div>
-        <div 
+    <div className="w-full flex items-center justify-between p-3 rounded-lg">
+      <div className="flex flex-col">
+        <div className="text-lg font-medium">{stock.symbol}</div>
+        <div className="text-sm text-muted-foreground">
+          ${stock.price.toFixed(2)}
+        </div>
+      </div>
+      <div className="flex items-center gap-2">
+        {isPositive ? (
+          <TrendingUp className="h-4 w-4 text-green-500" />
+        ) : (
+          <TrendingDown className="h-4 w-4 text-red-500" />
+        )}
+        <div
           className={cn(
-            "flex items-center text-xs",
-            stock.change >= 0 ? "text-green-500" : "text-red-500"
+            "text-sm font-medium",
+            isPositive ? "text-green-500" : "text-red-500"
           )}
         >
-          {stock.change >= 0 ? 
-            <TrendingUp className="h-3 w-3 mr-1" /> : 
-            <TrendingDown className="h-3 w-3 mr-1" />
-          }
-          {stock.change > 0 ? '+' : ''}
-          {stock.change.toFixed(2)} ({stock.changePercent > 0 ? '+' : ''}
-          {stock.changePercent.toFixed(2)}%)
+          {stock.changePercent.toFixed(2)}%
         </div>
       </div>
     </div>

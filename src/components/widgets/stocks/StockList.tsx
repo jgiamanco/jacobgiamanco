@@ -1,6 +1,6 @@
 import React from "react";
 import { Widget } from "../Widget";
-import { StockData } from "@/utils/stockApi";
+import { StockData } from "@/types";
 import { StockItem } from "./StockItem";
 import { StockSearch } from "./StockSearch";
 
@@ -8,7 +8,6 @@ interface StockListProps {
   stocks: StockData[];
   isLoading: boolean;
   onAddStock: (symbol: string) => void;
-  onStockClick: (symbol: string) => void;
   headerContent?: React.ReactNode;
   children?: React.ReactNode;
 }
@@ -17,34 +16,25 @@ export const StockList: React.FC<StockListProps> = ({
   stocks,
   isLoading,
   onAddStock,
-  onStockClick,
   headerContent,
   children,
 }) => {
   return (
-    <Widget
-      title="Market Overview"
-      isLoading={isLoading}
-      headerContent={headerContent}
-    >
-      <div className="space-y-3">
+    <Widget title="Stocks" isLoading={isLoading} headerContent={headerContent}>
+      <div className="flex flex-col gap-4">
         <StockSearch onAddStock={onAddStock} />
-
-        {stocks.length === 0 && !isLoading ? (
-          <div className="text-center py-4 text-muted-foreground">
-            No stocks to display. Add a stock symbol to get started.
-          </div>
-        ) : (
-          stocks.map((stock) => (
-            <StockItem
-              key={stock.symbol}
-              stock={stock}
-              onClick={() => onStockClick(stock.symbol)}
-            />
-          ))
-        )}
+        <div className="space-y-2">
+          {stocks
+            .filter((stock) => stock.symbol)
+            .map((stock) => (
+              <StockItem
+                key={`${stock.symbol}-${stock.timestamp}`}
+                stock={stock}
+              />
+            ))}
+        </div>
+        {children}
       </div>
-      {children}
     </Widget>
   );
 };

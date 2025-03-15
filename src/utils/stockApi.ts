@@ -15,11 +15,11 @@ export interface HistoricalData {
 }
 
 export interface StockHistoryData {
-  symbol: string;
-  day: HistoricalData[];
-  week: HistoricalData[];
-  month: HistoricalData[];
-  timestamp: number;
+  day: Array<{ date: string; price: number }>;
+  week: Array<{ date: string; price: number }>;
+  month: Array<{ date: string; price: number }>;
+  symbol?: string;
+  timestamp?: number;
 }
 
 const API_KEY = import.meta.env.VITE_FINNHUB_API_KEY;
@@ -202,9 +202,9 @@ export const fetchHistoricalData = async (
 
     const historyData: StockHistoryData = {
       symbol,
-      day: dayData.reverse(),
-      week: weekData.reverse(),
-      month: monthData.reverse(),
+      day: dayData.reverse().map(({ date, price }) => ({ date, price })),
+      week: weekData.reverse().map(({ date, price }) => ({ date, price })),
+      month: monthData.reverse().map(({ date, price }) => ({ date, price })),
       timestamp: Date.now(),
     };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Container } from "./Layout";
 import { useIsMobile, useIsLargeScreen } from "@/hooks/use-mobile";
@@ -15,9 +15,19 @@ import {
 export const Hero = () => {
   const isMobile = useIsMobile();
   const isLargeScreen = useIsLargeScreen();
+  const [showScroll, setShowScroll] = useState(true);
+
+  useEffect(() => {
+    // Show for 5 seconds before fading
+    const timer = setTimeout(() => {
+      setShowScroll(false);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <section className="relative min-h-[100svh] w-full py-4 sm:py-6 md:py-8 flex items-center justify-center">
+    <section className="relative min-h-[100svh] w-full py-4 sm:py-6 md:py-16 lg:py-24 flex items-center justify-center">
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
         <div className="absolute right-0 top-0 -translate-y-1/4 translate-x-1/4 w-3/4 h-3/4 rounded-full bg-primary opacity-[0.02] blur-3xl" />
@@ -48,7 +58,7 @@ export const Hero = () => {
 
             <div className="flex flex-col gap-2 sm:gap-3">
               <h1
-                className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl ${
+                className={`text-2xl sm:text-3xl md:text-3xl lg:text-5xl ${
                   isLargeScreen ? "xl:text-6xl" : ""
                 } font-medium tracking-tight mb-2 md:mb-3`}
               >
@@ -56,7 +66,7 @@ export const Hero = () => {
                 <span className="text-primary">experiences</span>
               </h1>
               <p
-                className={`text-sm sm:text-base md:text-lg ${
+                className={`text-sm sm:text-base md:text-base lg:text-lg ${
                   isLargeScreen ? "xl:text-xl" : ""
                 } text-muted-foreground mb-3 sm:mb-4 md:mb-5 max-w-2xl leading-relaxed`}
               >
@@ -87,13 +97,13 @@ export const Hero = () => {
                   <Button
                     size={isMobile ? "icon" : "icon"}
                     variant="outline"
-                    className={`rounded-md h-9 sm:h-10 md:h-11 w-9 sm:w-10 md:w-11 ${
-                      isLargeScreen ? "lg:h-12 lg:w-12" : ""
+                    className={`rounded-md h-9 sm:h-10 md:h-10 lg:h-11 w-9 sm:w-10 md:w-10 lg:w-11 ${
+                      isLargeScreen ? "xl:h-12 xl:w-12" : ""
                     } flex items-center justify-center`}
                   >
                     <Linkedin
-                      className={`h-4 sm:h-5 w-4 sm:w-5 ${
-                        isLargeScreen ? "lg:h-6 lg:w-6" : ""
+                      className={`h-4 sm:h-5 md:h-4 lg:h-5 w-4 sm:w-5 md:w-4 lg:w-5 ${
+                        isLargeScreen ? "xl:h-6 xl:w-6" : ""
                       }`}
                     />
                     <span className="sr-only">LinkedIn</span>
@@ -108,13 +118,13 @@ export const Hero = () => {
                   <Button
                     size={isMobile ? "icon" : "icon"}
                     variant="outline"
-                    className={`rounded-md h-9 sm:h-10 md:h-11 w-9 sm:w-10 md:w-11 ${
-                      isLargeScreen ? "lg:h-12 lg:w-12" : ""
+                    className={`rounded-md h-9 sm:h-10 md:h-10 lg:h-11 w-9 sm:w-10 md:w-10 lg:w-11 ${
+                      isLargeScreen ? "xl:h-12 xl:w-12" : ""
                     } flex items-center justify-center`}
                   >
                     <Github
-                      className={`h-4 sm:h-5 w-4 sm:w-5 ${
-                        isLargeScreen ? "lg:h-6 lg:w-6" : ""
+                      className={`h-4 sm:h-5 md:h-4 lg:h-5 w-4 sm:w-5 md:w-4 lg:w-5 ${
+                        isLargeScreen ? "xl:h-6 xl:w-6" : ""
                       }`}
                     />
                     <span className="sr-only">GitHub</span>
@@ -124,15 +134,15 @@ export const Hero = () => {
             </div>
 
             <div
-              className={`grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-4 ${
-                isLargeScreen ? "lg:gap-5" : ""
+              className={`grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-3 lg:gap-4 ${
+                isLargeScreen ? "xl:gap-5" : ""
               }`}
             >
               <SkillItem
                 icon={
                   <Code
-                    className={`h-4 sm:h-5 w-4 sm:w-5 ${
-                      isLargeScreen ? "lg:h-6 lg:w-6" : ""
+                    className={`h-4 sm:h-5 md:h-4 lg:h-5 w-4 sm:w-5 md:w-4 lg:w-5 ${
+                      isLargeScreen ? "xl:h-6 xl:w-6" : ""
                     }`}
                   />
                 }
@@ -144,8 +154,8 @@ export const Hero = () => {
               <SkillItem
                 icon={
                   <Briefcase
-                    className={`h-4 sm:h-5 w-4 sm:w-5 ${
-                      isLargeScreen ? "lg:h-6 lg:w-6" : ""
+                    className={`h-4 sm:h-5 md:h-4 lg:h-5 w-4 sm:w-5 md:w-4 lg:w-5 ${
+                      isLargeScreen ? "xl:h-6 xl:w-6" : ""
                     }`}
                   />
                 }
@@ -157,8 +167,8 @@ export const Hero = () => {
               <SkillItem
                 icon={
                   <Bot
-                    className={`h-4 sm:h-5 w-4 sm:w-5 ${
-                      isLargeScreen ? "lg:h-6 lg:w-6" : ""
+                    className={`h-4 sm:h-5 md:h-4 lg:h-5 w-4 sm:w-5 md:w-4 lg:w-5 ${
+                      isLargeScreen ? "xl:h-6 xl:w-6" : ""
                     }`}
                   />
                 }
@@ -170,8 +180,8 @@ export const Hero = () => {
               <SkillItem
                 icon={
                   <Users
-                    className={`h-4 sm:h-5 w-4 sm:w-5 ${
-                      isLargeScreen ? "lg:h-6 lg:w-6" : ""
+                    className={`h-4 sm:h-5 md:h-4 lg:h-5 w-4 sm:w-5 md:w-4 lg:w-5 ${
+                      isLargeScreen ? "xl:h-6 xl:w-6" : ""
                     }`}
                   />
                 }
@@ -185,7 +195,7 @@ export const Hero = () => {
           <div className="w-full sm:w-2/3 md:w-1/3 flex justify-center md:justify-end self-center order-1 md:order-2 mb-4 md:mb-0 mt-16 sm:mt-20 md:mt-0">
             <div className="relative transform transition-all duration-300 hover:scale-105">
               <div
-                className={`w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 ${
+                className={`w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44 lg:w-48 lg:h-48 ${
                   isLargeScreen ? "xl:w-64 xl:h-64" : ""
                 } rounded-2xl overflow-hidden border-4 border-primary/20 shadow-xl`}
               >
@@ -208,24 +218,20 @@ export const Hero = () => {
         </div>
       </Container>
 
-      <div className="absolute bottom-4 sm:bottom-6 -translate-x-1/2 animate-hover-bounce hidden md:flex flex-col items-center">
+      <div
+        className={`fixed bottom-8 left-1/2 -translate-x-1/2 hidden md:block transition-opacity duration-700 ${
+          showScroll ? "opacity-100" : "opacity-0 hover:opacity-100"
+        }`}
+      >
         <a
           href="#skills"
-          className="flex flex-col items-center text-muted-foreground hover:text-primary transition-colors"
+          className="group flex flex-col items-center gap-2 px-4 py-3 rounded-xl bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-colors"
           aria-label="Scroll to skills section"
         >
-          <span
-            className={`text-xs sm:text-sm mb-2 ${
-              isLargeScreen ? "lg:text-base" : ""
-            }`}
-          >
+          <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
             Scroll Down
           </span>
-          <ArrowDown
-            className={`h-4 sm:h-5 w-4 sm:w-5 ${
-              isLargeScreen ? "lg:h-6 lg:w-6" : ""
-            }`}
-          />
+          <ArrowDown className="h-5 w-5 text-muted-foreground group-hover:text-foreground animate-bounce-gentle" />
         </a>
       </div>
     </section>

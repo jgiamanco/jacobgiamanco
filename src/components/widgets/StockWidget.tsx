@@ -1,235 +1,146 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { StockList } from "./stocks/StockList";
-import { StockDetail } from "./stocks/StockDetail";
-import {
-  StockData,
-  StockHistoryData,
-  fetchStockData,
-  fetchHistoricalData,
-} from "@/utils/stockApi";
+import { StockData } from "@/types";
+import { API_KEYS, API_ENDPOINTS, CACHE_DURATION } from "@/config/api";
+import { cache } from "@/utils/cache";
+import { ErrorBoundary } from "../ErrorBoundary";
 import { useToast } from "@/hooks/use-toast";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { devError } from "@/utils/logger";
 
-export const StockWidget = () => {
+export const StockWidget: React.FC = () => {
   const [stocks, setStocks] = useState<StockData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedStock, setSelectedStock] = useState<string | null>(null);
-  const [historicalData, setHistoricalData] = useState<
-    Record<string, StockHistoryData>
-  >({});
   const { toast } = useToast();
 
-  // Default stock symbols to fetch
-  const defaultSymbols = ["AAPL", "MSFT", "TSLA", "AMZN"];
+  const fetchStockData = useCallback(async (symbol: string) => {
+    const upperSymbol = symbol.toUpperCase().trim();
+    try {
+      // Validate US stock symbol format (typically 1-5 characters, letters only)
+      if (!upperSymbol || !/^[A-Z]{1,5}$/.test(upperSymbol)) {
+        throw new Error(
+          "Invalid US stock symbol. Please use 1-5 letters only."
+        );
+      }
+
+      const cacheKey = `stock_${upperSymbol}`;
+      const cachedData = cache.get<StockData>(cacheKey, CACHE_DURATION.STOCKS);
+
+      if (cachedData) {
+        devError(`Using cached data for ${upperSymbol}:`, cachedData);
+        return cachedData;
+      }
+
+      const url = `${API_ENDPOINTS.STOCKS.BASE}/quote?symbol=${upperSymbol}&token=${API_KEYS.FINNHUB}`;
+      devError(`Fetching stock data from URL:`, url);
+
+      const response = await fetch(url);
+      devError(`Response status for ${upperSymbol}:`, response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        devError(`Error response for ${upperSymbol}:`, errorText);
+        throw new Error(`Failed to fetch stock data for ${upperSymbol}`);
+      }
+
+      const data = await response.json();
+      devError(`Raw API response for ${upperSymbol}:`, data);
+
+      // Check for valid US stock data
+      if (!data || typeof data.c === "undefined" || data.c === 0) {
+        devError(`Invalid or non-US stock data for ${upperSymbol}:`, data);
+        throw new Error(`Invalid or non-US stock data for ${upperSymbol}`);
+      }
+
+      const stockData: StockData = {
+        symbol: upperSymbol,
+        price: data.c || 0,
+        change: data.d || 0,
+        changePercent: data.dp || 0,
+        lastUpdated: new Date().toISOString(),
+        timestamp: Date.now(),
+      };
+
+      cache.set(cacheKey, stockData, CACHE_DURATION.STOCKS);
+      return stockData;
+    } catch (error) {
+      devError(`Error fetching stock data for ${upperSymbol}:`, error);
+      throw error;
+    }
+  }, []);
+
+  const fetchStocks = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      // Popular US tech stocks
+      const symbols = ["AAPL", "MSFT", "PYPL", "TSLA"];
+      const stockData = await Promise.all(
+        symbols.map((symbol) => fetchStockData(symbol))
+      );
+      setStocks(stockData);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch stock data. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [fetchStockData, toast]);
 
   useEffect(() => {
     fetchStocks();
-    const interval = setInterval(fetchStocks, 12 * 60 * 60 * 1000); // 12 hours
+    const interval = setInterval(fetchStocks, CACHE_DURATION.STOCKS);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchStocks]);
 
-  const fetchStocks = async (forceRefresh: boolean = false) => {
-    setIsLoading(true);
-    try {
-      // Fetch stocks one at a time to avoid hitting API limits
-      const validStocks: StockData[] = [];
-      for (const symbol of defaultSymbols) {
-        try {
-          const stockData = await fetchStockData(symbol);
-          if (stockData) {
-            validStocks.push(stockData);
-
-            // Fetch historical data immediately for this stock
-            const histData = await fetchHistoricalData(stockData.symbol);
-            setHistoricalData((prev) => ({
-              ...prev,
-              [stockData.symbol]: histData,
-            }));
-          }
-
-          // Add a small delay between requests to respect API limits
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        } catch (error) {
-          devError(`Error fetching data for ${symbol}:`, error);
-        }
-      }
-
-      if (validStocks.length === 0) {
-        throw new Error("Could not fetch any stock data");
-      }
-
-      setStocks(validStocks);
-    } catch (error) {
-      devError("Error fetching stocks:", error);
-      toast({
-        title: "Stock data error",
-        description: "Could not fetch stock data. Using mock data as fallback.",
-        variant: "destructive",
-      });
-
-      // Use mock data as fallback
-      setMockStockData();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleRefresh = () => {
-    fetchStocks(true);
-  };
-
-  const setMockStockData = () => {
-    const mockStocks: StockData[] = [
-      {
-        symbol: "AAPL",
-        price: 178.72,
-        change: 2.35,
-        changePercent: 1.32,
-        timestamp: Date.now(),
-      },
-      {
-        symbol: "MSFT",
-        price: 396.51,
-        change: -0.68,
-        changePercent: -0.17,
-        timestamp: Date.now(),
-      },
-      {
-        symbol: "TSLA",
-        price: 177.29,
-        change: 5.23,
-        changePercent: 3.04,
-        timestamp: Date.now(),
-      },
-      {
-        symbol: "AMZN",
-        price: 182.81,
-        change: -1.45,
-        changePercent: -0.78,
-        timestamp: Date.now(),
-      },
-    ];
-
-    setStocks(mockStocks);
-
-    const mockHistData: Record<string, StockHistoryData> = {};
-    for (const stock of mockStocks) {
-      const histData: StockHistoryData = {
-        symbol: stock.symbol,
-        day: Array.from({ length: 24 }, (_, i) => ({
-          date: `${i}:00`,
-          price: stock.price + (Math.random() - 0.5) * 2,
-        })),
-        week: Array.from({ length: 5 }, (_, i) => ({
-          date: `Day ${i + 1}`,
-          price: stock.price + (Math.random() - 0.5) * 5,
-        })),
-        month: Array.from({ length: 30 }, (_, i) => ({
-          date: `Day ${i + 1}`,
-          price: stock.price + (Math.random() - 0.5) * 10,
-        })),
-        timestamp: Date.now(),
-      };
-      mockHistData[stock.symbol] = histData;
-    }
-    setHistoricalData(mockHistData);
-  };
-
-  const handleAddStock = async (newSymbol: string) => {
-    setIsLoading(true);
-    try {
-      // Add a delay if we've recently made a request
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const newStock = await fetchStockData(newSymbol);
-
-      if (newStock) {
-        // Add a delay before fetching historical data
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Add historical data for the new stock
-        const histData = await fetchHistoricalData(newStock.symbol);
-        setHistoricalData((prev) => ({
-          ...prev,
-          [newStock.symbol]: histData,
-        }));
-
-        // Add to the top of the list and remove the last one if we have more than 4
-        const updatedStocks = [newStock, ...stocks];
-        if (updatedStocks.length > 4) {
-          updatedStocks.pop();
-        }
-
-        setStocks(updatedStocks);
-
-        toast({
-          title: "Stock added",
-          description: `${newStock.symbol} has been added to your watchlist`,
+  const handleAddStock = useCallback(
+    async (newSymbol: string) => {
+      try {
+        const stockData = await fetchStockData(newSymbol);
+        setStocks((prev) => {
+          const newStocks = [stockData, ...prev.slice(0, 3)]; // Keep only 4 items
+          return newStocks;
         });
-      } else {
         toast({
-          title: "Stock not found",
-          description: `Could not find stock symbol: ${newSymbol}. Please check the symbol and try again.`,
+          title: "Success",
+          description: `Added ${newSymbol} to your watchlist.`,
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: `Failed to add ${newSymbol}. Please check the symbol and try again.`,
           variant: "destructive",
         });
       }
-    } catch (error) {
-      devError("Error adding stock:", error);
-      toast({
-        title: "Error adding stock",
-        description:
-          "API rate limit may have been reached. Please try again in a minute.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleStockClick = (symbol: string) => {
-    setSelectedStock(symbol);
-  };
-
-  const handleBackClick = () => {
-    setSelectedStock(null);
-  };
-
-  if (selectedStock) {
-    const stock = stocks.find((s) => s.symbol === selectedStock);
-    if (!stock) return null;
-
-    return (
-      <StockDetail
-        stock={stock}
-        historicalData={historicalData[stock.symbol]}
-        onBackClick={handleBackClick}
-      />
-    );
-  }
+    },
+    [fetchStockData, toast]
+  );
 
   return (
-    <StockList
-      stocks={stocks}
-      isLoading={isLoading}
-      onAddStock={handleAddStock}
-      onStockClick={handleStockClick}
-      headerContent={
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleRefresh}
-          disabled={isLoading}
-          className="ml-auto"
-        >
-          <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
-        </Button>
-      }
-    >
-      <div className="mt-2 text-[10px] text-muted-foreground text-center">
-        Stock prices are updated every 12 hours
-      </div>
-    </StockList>
+    <ErrorBoundary>
+      <StockList
+        stocks={stocks}
+        isLoading={isLoading}
+        onAddStock={handleAddStock}
+        headerContent={
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={fetchStocks}
+            disabled={isLoading}
+            className="h-8 w-8"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </Button>
+        }
+      >
+        <div className="mt-2 text-[10px] text-muted-foreground text-center">
+          Stock prices are updated every 12 hours
+        </div>
+      </StockList>
+    </ErrorBoundary>
   );
 };
