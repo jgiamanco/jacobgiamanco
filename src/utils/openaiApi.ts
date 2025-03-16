@@ -1,23 +1,6 @@
 import { API_ENDPOINTS } from "@/config/api";
 import { logger } from "./logger";
 
-const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
-const ASSISTANT_ID = "asst_H6bV1Mn6VCb2OuplombtzW58";
-
-interface AssistantMessage {
-  role: "assistant";
-  content: Array<{
-    type: "text";
-    text: {
-      value: string;
-    };
-  }>;
-}
-
-interface MessagesResponse {
-  data: AssistantMessage[];
-}
-
 const parseResponse = (text: string): string => {
   // Remove citations
   text = text.replace(/【[^】]*】/g, "");
