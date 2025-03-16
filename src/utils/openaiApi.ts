@@ -1,3 +1,4 @@
+import { API_ENDPOINTS } from "@/config/api";
 import { logger } from "./logger";
 
 const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
@@ -25,160 +26,28 @@ const parseResponse = (text: string): string => {
 
 export const sendMessage = async (message: string): Promise<string> => {
   try {
-    // Create a thread
-    const threadResponse = await fetch("https://api.openai.com/v1/threads", {
+    const response = await fetch(API_ENDPOINTS.CHAT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${API_KEY}`,
-        "OpenAI-Beta": "assistants=v2",
       },
-      body: JSON.stringify({
-        metadata: {},
-      }),
+      body: JSON.stringify({ message }),
     });
 
-    if (!threadResponse.ok) {
-      const errorData = await threadResponse.json().catch(() => ({}));
-      logger.error("Thread creation failed:", {
-        status: threadResponse.status,
-        statusText: threadResponse.statusText,
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      logger.error("Chat request failed:", {
+        status: response.status,
+        statusText: response.statusText,
         error: errorData,
-        requestBody: {
-          metadata: {},
-        },
       });
-      throw new Error(`Failed to create thread: ${threadResponse.status}`);
+      throw new Error(`Failed to get response: ${response.status}`);
     }
 
-    const thread = await threadResponse.json();
-    logger.error("Thread created successfully:", thread);
-
-    // Add the user's message to the thread
-    const messageResponse = await fetch(
-      `https://api.openai.com/v1/threads/${thread.id}/messages`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${API_KEY}`,
-          "OpenAI-Beta": "assistants=v2",
-        },
-        body: JSON.stringify({
-          role: "user",
-          content: message,
-        }),
-      }
-    );
-
-    if (!messageResponse.ok) {
-      const errorData = await messageResponse.json().catch(() => ({}));
-      logger.error("Message creation failed:", {
-        status: messageResponse.status,
-        statusText: messageResponse.statusText,
-        error: errorData,
-        threadId: thread.id,
-      });
-      throw new Error(`Failed to add message: ${messageResponse.status}`);
-    }
-
-    const messageData = await messageResponse.json();
-    logger.error("Message added successfully:", messageData);
-
-    // Run the assistant
-    const runResponse = await fetch(
-      `https://api.openai.com/v1/threads/${thread.id}/runs`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${API_KEY}`,
-          "OpenAI-Beta": "assistants=v2",
-        },
-        body: JSON.stringify({
-          assistant_id: ASSISTANT_ID,
-          model: "gpt-4-turbo-preview",
-          instructions: `You are a helpful AI assistant that provides information about Jacob's skills, experience, and projects. Format your responses in a clear, visually appealing way using markdown.`,
-        }),
-      }
-    );
-
-    if (!runResponse.ok) {
-      const errorData = await runResponse.json().catch(() => ({}));
-      logger.error("Run creation failed:", {
-        status: runResponse.status,
-        statusText: runResponse.statusText,
-        error: errorData,
-        threadId: thread.id,
-        assistantId: ASSISTANT_ID,
-        requestBody: {
-          assistant_id: ASSISTANT_ID,
-          model: "gpt-4-turbo-preview",
-          instructions: `You are a helpful AI assistant that provides information about Jacob's skills, experience, and projects. Format your responses in a clear, visually appealing way using markdown.`,
-        },
-      });
-      throw new Error(`Failed to create run: ${runResponse.status}`);
-    }
-
-    const run = await runResponse.json();
-    logger.error("Run created successfully:", run);
-
-    // Poll for run completion
-    let runStatus = run.status;
-    while (runStatus === "in_progress" || runStatus === "queued") {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const statusResponse = await fetch(
-        `https://api.openai.com/v1/threads/${thread.id}/runs/${run.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${API_KEY}`,
-            "OpenAI-Beta": "assistants=v2",
-          },
-        }
-      );
-      const statusData = await statusResponse.json();
-      runStatus = statusData.status;
-      logger.error("Run status:", runStatus);
-    }
-
-    if (runStatus !== "completed") {
-      throw new Error(`Run failed with status: ${runStatus}`);
-    }
-
-    // Get the assistant's response
-    const messagesResponse = await fetch(
-      `https://api.openai.com/v1/threads/${thread.id}/messages`,
-      {
-        headers: {
-          Authorization: `Bearer ${API_KEY}`,
-          "OpenAI-Beta": "assistants=v2",
-        },
-      }
-    );
-
-    if (!messagesResponse.ok) {
-      const errorData = await messagesResponse.json().catch(() => ({}));
-      logger.error("Message retrieval failed:", {
-        status: messagesResponse.status,
-        statusText: messagesResponse.statusText,
-        error: errorData,
-        threadId: thread.id,
-      });
-      throw new Error(`Failed to get messages: ${messagesResponse.status}`);
-    }
-
-    const messagesData: MessagesResponse = await messagesResponse.json();
-    const assistantMessage = messagesData.data.find(
-      (msg) => msg.role === "assistant"
-    );
-
-    if (!assistantMessage) {
-      throw new Error("No assistant message found");
-    }
-
-    return parseResponse(assistantMessage.content[0].text.value);
+    const data = await response.json();
+    return data.response;
   } catch (error) {
-    logger.error("Error sending message to OpenAI:", error);
-    return "I apologize, but I'm having trouble connecting to the AI service right now. Please try again later.";
+    logger.error("Error sending message to chat service:", error);
+    return "I apologize, but I'm having trouble connecting to the chat service right now. Please try again later.";
   }
 };

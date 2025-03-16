@@ -3,13 +3,8 @@ import { Widget } from "./Widget";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Game, RawGameData, SportType } from "@/types";
-import {
-  API_KEYS,
-  API_ENDPOINTS,
-  CACHE_DURATION,
-  FAVORITE_TEAMS,
-} from "@/config/api";
+import { Game, SportType } from "@/types";
+import { API_ENDPOINTS, CACHE_DURATION, FAVORITE_TEAMS } from "@/config/api";
 import { cache } from "@/utils/cache";
 import { ErrorBoundary } from "../ErrorBoundary";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -40,116 +35,44 @@ export const SportsWidget: React.FC<SportsWidgetProps> = ({
   );
   const { toast } = useToast();
 
-  const getScore = useCallback(
-    (
-      score: number | undefined | null,
-      isInProgress: boolean,
-      isFinal: boolean
-    ): number | string => {
-      if (typeof score === "number") return score;
-      if (!isInProgress && !isFinal) return "-";
-      return 0;
-    },
-    []
-  );
-
-  const processGameData = useCallback(
-    (game: RawGameData): Game => {
-      const status = (game.Status || game.status || "Unknown").toLowerCase();
-      const isInProgress = status === "inprogress" || status === "in progress";
-      const isFinal =
-        status === "final" || status === "f/so" || status === "f/ot";
-
-      const awayScore = getScore(
-        game.AwayTeamRuns ||
-          game.AwayTeamScore ||
-          game.AwayScore ||
-          game.VenueTeamScore,
-        isInProgress,
-        isFinal
-      );
-      const homeScore = getScore(
-        game.HomeTeamRuns ||
-          game.HomeTeamScore ||
-          game.HomeScore ||
-          game.LocalTeamScore,
-        isInProgress,
-        isFinal
-      );
-
-      return {
-        GameID: game.GameID || game.GameId || game.gameId || 0,
-        Status: game.Status || game.status || "Unknown",
-        DateTime:
-          game.DateTime ||
-          game.GameDate ||
-          game.Date ||
-          game.dateTime ||
-          new Date().toISOString(),
-        AwayTeam: game.AwayTeam || game.VenueTeam || game.VisitorTeam || "Away",
-        HomeTeam: game.HomeTeam || game.LocalTeam || "Home",
-        AwayTeamScore: awayScore,
-        HomeTeamScore: homeScore,
-        Quarter: game.Quarter || game.Period || game.Inning,
-        TimeRemainingMinutes:
-          game.TimeRemainingMinutes || game.MinutesRemaining,
-        TimeRemainingSeconds:
-          game.TimeRemainingSeconds || game.SecondsRemaining,
-        Channel: game.Channel || game.Broadcast,
-        StadiumDetails: game.StadiumDetails || game.Venue,
-      };
-    },
-    [getScore]
-  );
-
   const fetchGames = useCallback(async () => {
     setIsLoading(true);
     try {
       const currentDate = getCurrentDateFormatted();
       const cacheKey = `sports_${selectedSport}_${currentDate}`;
-      const cachedData = cache.get<RawGameData[]>(
-        cacheKey,
-        CACHE_DURATION.SPORTS
-      );
+      const cachedData = cache.get<Game[]>(cacheKey, CACHE_DURATION.SPORTS);
 
       if (cachedData) {
-        const processedGames = cachedData.map(processGameData);
-        setGames(processedGames);
+        setGames(cachedData);
         setIsLoading(false);
         return;
       }
 
-      const API_KEY =
-        API_KEYS[selectedSport.toUpperCase() as keyof typeof API_KEYS];
-      if (!API_KEY) {
-        throw new Error(`No API key found for ${selectedSport.toUpperCase()}`);
-      }
-
-      const endpoint =
-        API_ENDPOINTS.SPORTS[
-          selectedSport.toUpperCase() as keyof typeof API_ENDPOINTS.SPORTS
-        ];
-      const response = await fetch(`${endpoint}/${currentDate}?key=${API_KEY}`);
+      const response = await fetch(API_ENDPOINTS.SPORTS(selectedSport));
 
       if (!response.ok) {
-        const errorText = await response.text();
-        logger.error(`${selectedSport.toUpperCase()} API Error:`, {
-          status: response.status,
-          statusText: response.statusText,
-          errorText,
-        });
-        throw new Error(
-          `Failed to fetch ${selectedSport.toUpperCase()} games (Status: ${
-            response.status
-          })`
-        );
+        throw new Error(`Failed to fetch ${selectedSport.toUpperCase()} games`);
       }
 
-      let gamesData = await response.json();
-      gamesData = Array.isArray(gamesData) ? gamesData : [];
+      const data = await response.json();
 
-      cache.set(cacheKey, gamesData, CACHE_DURATION.SPORTS);
-      const processedGames = gamesData.map(processGameData);
+      // Check if the data is in the expected format
+      const gamesData = Array.isArray(data) ? data : data.games || [];
+
+      // Ensure the data matches our Game interface
+      const processedGames = gamesData.map((game: Game) => ({
+        GameID: game.GameID || Date.now(),
+        DateTime: game.DateTime || new Date().toISOString(),
+        Status: game.Status || "Scheduled",
+        AwayTeam: game.AwayTeam || "Away",
+        HomeTeam: game.HomeTeam || "Home",
+        AwayTeamScore: game.AwayTeamScore ?? "-",
+        HomeTeamScore: game.HomeTeamScore ?? "-",
+        Channel: game.Channel,
+        StadiumDetails: game.StadiumDetails,
+      }));
+
+      cache.set(cacheKey, processedGames, CACHE_DURATION.SPORTS);
       setGames(processedGames);
     } catch (error) {
       logger.error("Error fetching games:", error);
@@ -161,7 +84,7 @@ export const SportsWidget: React.FC<SportsWidgetProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [selectedSport, processGameData, toast]);
+  }, [selectedSport, toast]);
 
   useEffect(() => {
     fetchGames();
@@ -179,54 +102,9 @@ export const SportsWidget: React.FC<SportsWidgetProps> = ({
     setCurrentIndex((prev) => (prev < games.length - 1 ? prev + 1 : 0));
   }, [games.length]);
 
-  const formatPeriod = (game: Game, sport: SportType) => {
-    const status = game.Status.toLowerCase();
-    if (status !== "inprogress" && status !== "in progress") {
-      return null;
-    }
+  const formatGameTime = (dateTime: string, status: string | undefined) => {
+    if (!status) return "Unknown";
 
-    const getFormattedTime = (minutes?: number, seconds?: number) =>
-      `${minutes || 0}:${(seconds || 0).toString().padStart(2, "0")}`;
-
-    const getInningDisplay = (inning: string) => {
-      const num = parseInt(inning);
-      const suffix =
-        num === 1 ? "st" : num === 2 ? "nd" : num === 3 ? "rd" : "th";
-      return `${num}${suffix} Inning`;
-    };
-
-    switch (sport) {
-      case "nba":
-      case "nfl":
-        return game.Quarter
-          ? `Q${game.Quarter} ${getFormattedTime(
-              game.TimeRemainingMinutes,
-              game.TimeRemainingSeconds
-            )}`
-          : null;
-
-      case "mlb": {
-        const inning = game.Quarter || game.Inning;
-        return inning ? getInningDisplay(inning) : null;
-      }
-
-      case "nhl": {
-        const period = game.Quarter || game.Period;
-        if (!period) return null;
-        return parseInt(period) > 3
-          ? "OT"
-          : `P${period} ${getFormattedTime(
-              game.TimeRemainingMinutes,
-              game.TimeRemainingSeconds
-            )}`;
-      }
-
-      default:
-        return null;
-    }
-  };
-
-  const formatGameTime = (dateTime: string, status: string) => {
     const statusLower = status.toLowerCase();
     if (statusLower === "inprogress" || statusLower === "in progress") {
       return "LIVE";
@@ -323,7 +201,10 @@ export const SportsWidget: React.FC<SportsWidgetProps> = ({
               >
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-xs font-medium text-primary">
-                    {formatGameTime(game.DateTime, game.Status)}
+                    {formatGameTime(
+                      game.DateTime || new Date().toISOString(),
+                      game.Status
+                    )}
                   </span>
                   {game.Channel && (
                     <span className="text-xs text-muted-foreground">
@@ -341,7 +222,7 @@ export const SportsWidget: React.FC<SportsWidgetProps> = ({
                       )}
                     </span>
                     <span className="text-base font-bold">
-                      {game.AwayTeamScore}
+                      {game.AwayTeamScore ?? "-"}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
@@ -352,17 +233,18 @@ export const SportsWidget: React.FC<SportsWidgetProps> = ({
                       )}
                     </span>
                     <span className="text-base font-bold">
-                      {game.HomeTeamScore}
+                      {game.HomeTeamScore ?? "-"}
                     </span>
                   </div>
                 </div>
 
-                {(game.Status.toLowerCase() === "inprogress" ||
-                  game.Status.toLowerCase() === "in progress") && (
-                  <div className="mt-1 text-xs text-primary">
-                    {formatPeriod(game, selectedSport) || game.Status}
-                  </div>
-                )}
+                {game.Status &&
+                  (game.Status.toLowerCase() === "inprogress" ||
+                    game.Status.toLowerCase() === "in progress") && (
+                    <div className="mt-1 text-xs text-primary">
+                      {game.Status}
+                    </div>
+                  )}
 
                 {game.StadiumDetails && (
                   <div className="mt-1 text-xs text-muted-foreground truncate">

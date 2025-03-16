@@ -10,16 +10,31 @@ export const API_KEYS = {
   EMAILJS: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
 };
 
+// API Base URL
+export const API_BASE_URL = "https://portfolio-nest-proxy.vercel.app";
+
+// API Endpoints
 export const API_ENDPOINTS = {
-  SPORTS: {
-    MLB: "https://api.sportsdata.io/v3/mlb/scores/json/GamesByDate",
-    NFL: "https://api.sportsdata.io/v3/nfl/scores/json/ScoresByDate",
-    NHL: "https://api.sportsdata.io/v3/nhl/scores/json/GamesByDate",
-    NBA: "https://api.sportsdata.io/v3/nba/scores/json/GamesByDate",
-  },
-  STOCKS: {
-    BASE: "https://finnhub.io/api/v1",
-  },
+  // Weather endpoint
+  WEATHER: (location: string) =>
+    `${API_BASE_URL}/api/weather?location=${location}`,
+
+  // Stock endpoints
+  STOCK_QUOTE: (symbol: string) =>
+    `${API_BASE_URL}/api/stock/quote?symbol=${symbol}`,
+  STOCK_HISTORY: (
+    symbol: string,
+    resolution: string,
+    from: number,
+    to: number
+  ) =>
+    `${API_BASE_URL}/api/stock/historical?symbol=${symbol}&resolution=${resolution}&from=${from}&to=${to}`,
+
+  // Sports endpoints
+  SPORTS: (sport: string) => `${API_BASE_URL}/api/sports/${sport}`,
+
+  // Chat endpoints
+  CHAT: `${API_BASE_URL}/api/openai/chat`,
 };
 
 export const CACHE_DURATION = {

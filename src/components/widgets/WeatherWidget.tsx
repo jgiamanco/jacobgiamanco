@@ -16,8 +16,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useLocation } from "@/contexts/LocationContext";
+import { useLocation, defaultLocation } from "@/contexts/LocationContext";
 import { logger } from "@/utils/logger";
+import { API_ENDPOINTS } from "@/config/api";
 
 interface WeatherData {
   temperature: number;
@@ -27,22 +28,12 @@ interface WeatherData {
   humidity: number;
   description: string;
   windSpeed: number;
+  coordinates?: {
+    lat: number;
+    lon: number;
+  };
+  timezone?: number;
 }
-
-const makeSecureRequest = async (locationQuery: string, API_KEY: string) => {
-  const url = new URL("https://api.openweathermap.org/data/2.5/weather");
-  url.search = new URLSearchParams({
-    q: locationQuery,
-    units: "imperial",
-    appid: API_KEY,
-  }).toString();
-
-  // Using no-referrer policy to prevent API key leaks
-  return fetch(url, {
-    method: "GET",
-    referrerPolicy: "no-referrer",
-  });
-};
 
 export const WeatherWidget = () => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
@@ -50,9 +41,6 @@ export const WeatherWidget = () => {
   const [inputLocation, setInputLocation] = useState("");
   const { toast } = useToast();
   const { location, setLocation } = useLocation();
-
-  // Using environment variable for API key
-  const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
   const formatLocationQuery = (query: string): string => {
     const parts = query
@@ -86,33 +74,26 @@ export const WeatherWidget = () => {
       setIsLoading(true);
       try {
         const formattedQuery = formatLocationQuery(locationQuery);
-        const response = await makeSecureRequest(formattedQuery, API_KEY);
+        const response = await fetch(API_ENDPOINTS.WEATHER(formattedQuery));
 
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
           throw new Error(
             `Location "${locationQuery}" not found. Please try a different location.`
           );
         }
 
-        const data = await response.json();
-        // Update location context with coordinates and timezone
+        const data: WeatherData = await response.json();
+        const cityName = data.location.split(",")[0];
+
+        // Update location with both name and coordinates from the weather response
         setLocation({
-          lat: data.coord.lat,
-          lon: data.coord.lon,
-          name: data.name,
-          timezone: data.timezone,
+          name: cityName,
+          lat: data.coordinates?.lat ?? defaultLocation.lat,
+          lon: data.coordinates?.lon ?? defaultLocation.lon,
+          timezone: data.timezone ?? defaultLocation.timezone,
         });
 
-        setWeather({
-          temperature: data.main.temp,
-          condition: data.weather[0].main.toLowerCase(),
-          location: `${data.name}, ${data.sys.country}`,
-          feelsLike: data.main.feels_like,
-          humidity: data.main.humidity,
-          description: data.weather[0].description,
-          windSpeed: data.wind.speed,
-        });
+        setWeather(data);
       } catch (error) {
         logger.error("Error fetching weather:", error);
         toast({
@@ -138,21 +119,14 @@ export const WeatherWidget = () => {
         setIsLoading(false);
       }
     },
-    [API_KEY, toast, setLocation]
+    [toast, setLocation]
   );
 
   useEffect(() => {
-    if (!API_KEY) {
-      toast({
-        title: "Configuration Error",
-        description:
-          "OpenWeather API key is not configured. Please ensure your .env file exists",
-        variant: "destructive",
-      });
-      return;
+    if (location.name) {
+      fetchWeather(location.name);
     }
-    fetchWeather(location.name);
-  }, [location.name, API_KEY, toast, fetchWeather]);
+  }, [location.name]);
 
   const handleLocationSubmit = (e: React.FormEvent) => {
     e.preventDefault();

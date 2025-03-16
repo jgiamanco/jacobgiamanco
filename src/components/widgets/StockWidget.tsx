@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { StockList } from "./stocks/StockList";
 import { StockData } from "@/types";
-import { API_KEYS, API_ENDPOINTS, CACHE_DURATION } from "@/config/api";
+import { API_ENDPOINTS, CACHE_DURATION } from "@/config/api";
 import { cache } from "@/utils/cache";
 import { ErrorBoundary } from "../ErrorBoundary";
 import { useToast } from "@/hooks/use-toast";
@@ -28,40 +28,16 @@ export const StockWidget: React.FC = () => {
       const cachedData = cache.get<StockData>(cacheKey, CACHE_DURATION.STOCKS);
 
       if (cachedData) {
-        logger.error(`Using cached data for ${upperSymbol}:`, cachedData);
         return cachedData;
       }
 
-      const url = `${API_ENDPOINTS.STOCKS.BASE}/quote?symbol=${upperSymbol}&token=${API_KEYS.FINNHUB}`;
-      logger.error(`Fetching stock data from URL:`, url);
-
-      const response = await fetch(url);
-      logger.error(`Response status for ${upperSymbol}:`, response.status);
+      const response = await fetch(API_ENDPOINTS.STOCK_QUOTE(upperSymbol));
 
       if (!response.ok) {
-        const errorText = await response.text();
-        logger.error(`Error response for ${upperSymbol}:`, errorText);
         throw new Error(`Failed to fetch stock data for ${upperSymbol}`);
       }
 
-      const data = await response.json();
-      logger.error(`Raw API response for ${upperSymbol}:`, data);
-
-      // Check for valid US stock data
-      if (!data || typeof data.c === "undefined" || data.c === 0) {
-        logger.error(`Invalid or non-US stock data for ${upperSymbol}:`, data);
-        throw new Error(`Invalid or non-US stock data for ${upperSymbol}`);
-      }
-
-      const stockData: StockData = {
-        symbol: upperSymbol,
-        price: data.c || 0,
-        change: data.d || 0,
-        changePercent: data.dp || 0,
-        lastUpdated: new Date().toISOString(),
-        timestamp: Date.now(),
-      };
-
+      const stockData = await response.json();
       cache.set(cacheKey, stockData, CACHE_DURATION.STOCKS);
       return stockData;
     } catch (error) {
@@ -101,7 +77,7 @@ export const StockWidget: React.FC = () => {
       try {
         const stockData = await fetchStockData(newSymbol);
         setStocks((prev) => {
-          const newStocks = [stockData, ...prev.slice(0, 2)]; // Keep only 4 items
+          const newStocks = [stockData, ...prev.slice(0, 2)]; // Keep only 3 items
           return newStocks;
         });
         toast({

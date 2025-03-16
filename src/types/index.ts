@@ -2,57 +2,47 @@ export type SportType = "mlb" | "nfl" | "nhl" | "nba";
 
 export interface Game {
   GameID: number;
-  Status: string;
   DateTime: string;
+  Status: string;
   AwayTeam: string;
   HomeTeam: string;
   AwayTeamScore: number | string;
   HomeTeamScore: number | string;
-  Quarter?: string;
-  Period?: string;
-  Inning?: string;
-  TimeRemainingMinutes?: number;
-  TimeRemainingSeconds?: number;
   Channel?: string;
   StadiumDetails?: string;
-  Season?: number;
-  Week?: number;
 }
 
 export interface RawGameData {
-  GameID?: number;
-  GameId?: number;
+  gameID?: number;
   gameId?: number;
-  Status?: string;
   status?: string;
-  DateTime?: string;
-  GameDate?: string;
-  Date?: string;
+  gameDate?: string;
+  date?: string;
   dateTime?: string;
-  AwayTeam?: string;
-  VenueTeam?: string;
-  VisitorTeam?: string;
-  HomeTeam?: string;
-  LocalTeam?: string;
-  AwayTeamScore?: number;
-  AwayTeamRuns?: number;
-  AwayScore?: number;
-  VenueTeamScore?: number;
-  HomeTeamScore?: number;
-  HomeTeamRuns?: number;
-  HomeScore?: number;
-  LocalTeamScore?: number;
-  Quarter?: string;
-  Period?: string;
-  Inning?: string;
-  TimeRemainingMinutes?: number;
-  MinutesRemaining?: number;
-  TimeRemainingSeconds?: number;
-  SecondsRemaining?: number;
-  Channel?: string;
-  Broadcast?: string;
-  StadiumDetails?: string;
-  Venue?: string;
+  awayTeam?: string;
+  venueTeam?: string;
+  visitorTeam?: string;
+  homeTeam?: string;
+  localTeam?: string;
+  awayTeamScore?: number;
+  awayTeamRuns?: number;
+  awayScore?: number;
+  venueTeamScore?: number;
+  homeTeamScore?: number;
+  homeTeamRuns?: number;
+  homeScore?: number;
+  localTeamScore?: number;
+  quarter?: string;
+  period?: string;
+  inning?: string;
+  timeRemainingMinutes?: number;
+  minutesRemaining?: number;
+  timeRemainingSeconds?: number;
+  secondsRemaining?: number;
+  channel?: string;
+  broadcast?: string;
+  stadiumDetails?: string;
+  venue?: string;
 }
 
 export interface StockData {

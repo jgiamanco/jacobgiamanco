@@ -12,7 +12,7 @@ interface LocationContextType {
   setLocation: (location: LocationData) => void;
 }
 
-const defaultLocation = {
+export const defaultLocation: LocationData = {
   lat: 32.7153,
   lon: -117.1573,
   name: "San Diego",
