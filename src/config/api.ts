@@ -10,8 +10,10 @@ export const API_KEYS = {
   EMAILJS: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
 };
 
-// API Base URL
-export const API_BASE_URL = "https://portfolio-nest-proxy.vercel.app";
+// API Base URL - Environment aware
+export const API_BASE_URL = import.meta.env.DEV
+  ? "http://localhost:3001"
+  : "https://portfolio-nest-proxy.vercel.app";
 
 // API Endpoints
 export const API_ENDPOINTS = {
