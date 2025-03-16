@@ -30,7 +30,9 @@ export const sendMessage = async (message: string): Promise<string> => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
+      mode: "cors",
       body: JSON.stringify({ message }),
     });
 
