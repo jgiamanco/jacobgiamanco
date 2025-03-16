@@ -31,6 +31,9 @@ export const WeatherWidget = () => {
   const [inputLocation, setInputLocation] = useState("");
   const { toast } = useToast();
   const { location, setLocation } = useLocation();
+  const [lastFetchedLocation, setLastFetchedLocation] = useState<string | null>(
+    null
+  );
 
   const formatLocationQuery = (query: string): string => {
     const parts = query
@@ -61,6 +64,11 @@ export const WeatherWidget = () => {
 
   const fetchWeather = useCallback(
     async (locationQuery: string) => {
+      // Prevent duplicate fetches for the same location
+      if (lastFetchedLocation === locationQuery) {
+        return;
+      }
+
       setIsLoading(true);
       try {
         const formattedQuery = formatLocationQuery(locationQuery);
@@ -75,7 +83,6 @@ export const WeatherWidget = () => {
         const data: WeatherData = await response.json();
         const cityName = data.location.split(",")[0];
 
-        // Update location with both name and coordinates from the weather response
         setLocation({
           name: cityName,
           lat: data.coordinates?.lat ?? defaultLocation.lat,
@@ -84,6 +91,7 @@ export const WeatherWidget = () => {
         });
 
         setWeather(data);
+        setLastFetchedLocation(locationQuery);
       } catch (error) {
         logger.error("Error fetching weather:", error);
         toast({
@@ -109,14 +117,15 @@ export const WeatherWidget = () => {
         setIsLoading(false);
       }
     },
-    [toast, setLocation]
+    [toast, setLocation, lastFetchedLocation]
   );
 
+  // Initial fetch
   useEffect(() => {
-    if (location.name) {
-      fetchWeather(location.name);
+    if (!lastFetchedLocation) {
+      fetchWeather(defaultLocation.name);
     }
-  }, [location.name]);
+  }, [fetchWeather]);
 
   const handleLocationSubmit = (e: React.FormEvent) => {
     e.preventDefault();
