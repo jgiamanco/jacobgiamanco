@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Widget } from "./Widget";
 import { cn } from "@/lib/utils";
-import { useLocation } from "@/contexts/LocationContext";
+import { useLocation } from "@/contexts/location";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 

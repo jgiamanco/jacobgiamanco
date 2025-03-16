@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useLocation } from "@/contexts/LocationContext";
+import { useLocation } from "@/contexts/location";
 import { logger } from "@/utils/logger";
 import { API_ENDPOINTS } from "@/config/api";
 import { LocationData, WeatherData, defaultLocation } from "@/types";

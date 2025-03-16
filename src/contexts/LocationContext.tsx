@@ -1,12 +1,6 @@
-import React, { createContext, useContext, useState } from "react";
-import { LocationData, LocationContextType, defaultLocation } from "@/types";
-
-const LocationContext = createContext<LocationContextType>({
-  location: defaultLocation,
-  setLocation: () => {},
-});
-
-export const useLocation = () => useContext(LocationContext);
+import React, { useState } from "react";
+import { LocationData, defaultLocation } from "@/types";
+import { LocationContext } from "./location";
 
 export const LocationProvider = ({
   children,
