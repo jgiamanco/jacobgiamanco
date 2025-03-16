@@ -2,31 +2,35 @@ import React, { useEffect, useState } from "react";
 import { Widget } from "./Widget";
 import { cn } from "@/lib/utils";
 import { useLocation } from "@/contexts/LocationContext";
+import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
-export const ClockWidget = () => {
+interface ClockWidgetProps {
+  className?: string;
+}
+
+export const ClockWidget = ({ className }: ClockWidgetProps) => {
   const [time, setTime] = useState(new Date());
   const { location } = useLocation();
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTime(new Date());
+      const utcDate = new Date();
+      // Convert timezone offset from seconds to hours for date-fns-tz
+      const timezoneOffset = location.timezone / 3600;
+      const timeZone = `Etc/GMT${timezoneOffset >= 0 ? "-" : "+"}${Math.abs(
+        timezoneOffset
+      )}`;
+      const zonedDate = toZonedTime(utcDate, timeZone);
+      setTime(zonedDate);
     }, 1000);
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+    return () => clearInterval(timer);
+  }, [location.timezone]);
 
-  // Convert to local time of the selected location using timezone offset
-  const getLocalTime = () => {
-    const utc = time.getTime() + time.getTimezoneOffset() * 60000;
-    return new Date(utc + location.timezone * 1000);
-  };
-
-  const localTime = getLocalTime();
-  const hours = localTime.getHours();
-  const minutes = localTime.getMinutes();
-  const seconds = localTime.getSeconds();
+  const hours = time.getHours();
+  const minutes = time.getMinutes();
+  const seconds = time.getSeconds();
 
   // Format hours for 12-hour clock
   const hours12 = hours % 12 || 12;
@@ -42,7 +46,7 @@ export const ClockWidget = () => {
   };
 
   return (
-    <Widget title="Clock" className="md:row-span-1">
+    <Widget title="Clock" className={`md:row-span-1 ${className || ""}`}>
       <div className="flex flex-col items-center justify-center h-full py-4">
         <div className="text-4xl font-light tracking-tight mb-2">
           {formatTime(hours12)}:<span>{formatTime(minutes)}</span>
@@ -53,13 +57,9 @@ export const ClockWidget = () => {
           </span>
         </div>
         <div className="text-sm text-muted-foreground">
-          {localTime.toLocaleDateString(undefined, {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
+          {format(time, "EEEE, MMMM d, yyyy")}
         </div>
+        <div className="text-xs text-gray-400">{location.name}</div>
         <div className="mt-6 relative w-24 h-24">
           <div className="absolute inset-0 rounded-full border-2 border-border/30" />
           <div

@@ -61,3 +61,37 @@ export interface StockHistoryData {
   symbol?: string;
   timestamp?: number;
 }
+
+export interface LocationData {
+  lat: number;
+  lon: number;
+  name: string;
+  timezone: number; // timezone offset in seconds
+}
+
+export interface LocationContextType {
+  location: LocationData;
+  setLocation: (location: LocationData) => void;
+}
+
+export const defaultLocation: LocationData = {
+  lat: 32.7153,
+  lon: -117.1573,
+  name: "San Diego",
+  timezone: -25200, // -7 hours in seconds (PST)
+};
+
+export interface WeatherData {
+  temperature: number;
+  condition: string;
+  location: string;
+  feelsLike: number;
+  humidity: number;
+  description: string;
+  windSpeed: number;
+  coordinates?: {
+    lat: number;
+    lon: number;
+  };
+  timezone?: number;
+}

@@ -16,23 +16,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useLocation, defaultLocation } from "@/contexts/LocationContext";
+import { useLocation } from "@/contexts/LocationContext";
 import { logger } from "@/utils/logger";
 import { API_ENDPOINTS } from "@/config/api";
+import { LocationData, WeatherData, defaultLocation } from "@/types";
 
-interface WeatherData {
-  temperature: number;
-  condition: string;
-  location: string;
-  feelsLike: number;
-  humidity: number;
-  description: string;
-  windSpeed: number;
-  coordinates?: {
-    lat: number;
-    lon: number;
-  };
-  timezone?: number;
+interface WeatherWidgetProps {
+  className?: string;
 }
 
 export const WeatherWidget = () => {
