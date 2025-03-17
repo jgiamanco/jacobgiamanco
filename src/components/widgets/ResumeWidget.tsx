@@ -9,7 +9,7 @@ export const ResumeWidget = () => {
 
   const handleDownload = () => {
     // URL to your resume PDF file hosted in the public directory
-    const resumeUrl = "/resume.pdf";
+    const resumeUrl = "/resume_jacob_giamanco_2025.pdf";
 
     // Create a link element
     const link = document.createElement("a");
