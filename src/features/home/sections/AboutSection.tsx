@@ -12,7 +12,7 @@ export const AboutSection = () => {
             <div className="relative">
               <div className="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-primary/20 shadow-xl">
                 <img
-                  src="/lovable-uploads/d0591870-cc31-4b6d-be04-7e285801a66b.png"
+                  src="/uploads/d0591870-cc31-4b6d-be04-7e285801a66b.png"
                   alt="Jacob Giamanco"
                   className="w-full h-full object-cover"
                 />

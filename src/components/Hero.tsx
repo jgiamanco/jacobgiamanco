@@ -200,7 +200,7 @@ export const Hero = () => {
                 } rounded-2xl overflow-hidden border-4 border-primary/20 shadow-xl`}
               >
                 <img
-                  src="/lovable-uploads/d0591870-cc31-4b6d-be04-7e285801a66b.png"
+                  src="/uploads/d0591870-cc31-4b6d-be04-7e285801a66b.png"
                   alt="Jacob Giamanco"
                   className="w-full h-full object-cover object-top"
                   loading="eager"
