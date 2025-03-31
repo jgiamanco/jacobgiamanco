@@ -36,7 +36,7 @@ export const API_ENDPOINTS = {
   SPORTS: (sport: string) => `${API_BASE_URL}/api/sports/${sport}`,
 
   // Chat endpoints
-  CHAT: `${API_BASE_URL}/api/chatbot/message`,
+  CHAT: `${API_BASE_URL}/api/openai/chat`,
 };
 
 export const CACHE_DURATION = {
