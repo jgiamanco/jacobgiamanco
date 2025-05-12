@@ -22,7 +22,7 @@ export const Header = () => {
     if (section) {
       const sectionTop = section.getBoundingClientRect().top + window.scrollY;
       window.scrollTo({
-        top: sectionTop,
+        top: sectionTop - 50,
         behavior: "smooth",
       });
     }
@@ -62,6 +62,12 @@ export const Header = () => {
                 className="text-sm hover:text-primary transition-colors"
               >
                 Widgets
+              </button>
+              <button
+                onClick={() => scrollToSection("projects")}
+                className="text-sm hover:text-primary transition-colors"
+              >
+                Projects
               </button>
               <button
                 onClick={() => scrollToSection("skills")}

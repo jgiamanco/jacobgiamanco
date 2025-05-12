@@ -224,9 +224,9 @@ export const Hero = () => {
         }`}
       >
         <a
-          href="#skills"
+          href="#widgets"
           className="group flex flex-col items-center gap-2 px-4 py-3 rounded-xl bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-colors"
-          aria-label="Scroll to skills section"
+          aria-label="Scroll to widgets section"
         >
           <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
             Scroll Down
